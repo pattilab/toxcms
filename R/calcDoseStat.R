@@ -1,7 +1,6 @@
 calcDoseStat = function(Feature, Dose_Levels, Feature, Dose_Levels, 
-                         multicomp = c("ttest","tukey","games-howell"), 
-                         p.adjust.method=c("none","holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr"), 
-                         anova.filter = 0.05, seq.comp=TRUE,...){
+                         multicomp = c("none","ttest","tukey","games-howell"), 
+                         p.adjust.method=c("none","holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr"),...){
 
   # Initialization ----------------------------------------------------------
   Feature = data.table(Feature)
