@@ -1,5 +1,4 @@
 calcDoseStat = function(Feature, Dose_Levels, Feature, Dose_Levels, 
-                         norm.method=c("range","auto","pareto","vast","level","log10","log2","sqrt"), 
                          multicomp = c("ttest","tukey","games-howell"), 
                          p.adjust.method=c("none","holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr"), 
                          anova.filter = 0.05, seq.comp=TRUE,...){
@@ -110,7 +109,7 @@ calcDoseStat = function(Feature, Dose_Levels, Feature, Dose_Levels,
   stat2<- cbind(stat2,aov_pvalue,pairwise_pvalue,relChange)
   DoseStat = list(Feature = Feature, Normalized_intensities = Normalized_Response, statistical_basic = stat1, 
                   statistic_multicomp = stat2, Dose_Levels = Dose_Levels, Dose_Replicates = Dose_Replicates, 
-                  SampleInfo = SampleInfo,norm.method,multicomp,p.adjust.method)
+                  SampleInfo = SampleInfo,norm.method="range",multicomp,p.adjust.method)
   return(DoseStat)
 }
 
