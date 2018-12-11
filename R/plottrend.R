@@ -1,4 +1,4 @@
-plot_reverse_trend<- function(doseResponse_report,Dose_conditions=NULL,mz_tag = "mzmed", rt_tag = "rtmed",file="Reverse Reponse Curve.pdf", y_tranform=TRUE){
+plottrend<- function(doseResponse_report,Dose_conditions=NULL,mz_tag = "mzmed", rt_tag = "rtmed",file="Reverse Reponse Curve.pdf", y_tranform=TRUE){
   Dose_Replicates <- doseResponse_report$Dose_Replicates
   if(is.null(Dose_conditions)){
     cat("Dose conditions are not specified. Previous dose names are applied.\n")
@@ -19,7 +19,6 @@ plot_reverse_trend<- function(doseResponse_report,Dose_conditions=NULL,mz_tag = 
   rt <- Feature %>% dplyr::select(contains(rt_tag)) # get the rt from Feature
   mz <- round(mz,4)
   rt <- round(rt)
-  
   # checking mz_tag and rt_tag
   if(length(mz)==1){
     cat("Succefully found",colnames(mz)," in feature table.\n")
@@ -30,7 +29,6 @@ plot_reverse_trend<- function(doseResponse_report,Dose_conditions=NULL,mz_tag = 
   } else{
     stop("Error occurs when matching ", mz_tag)
   }
-  
   if(length(rt)==1){
     cat("Succefully found",colnames(rt),"in feature table.\n")
   } else if(length(rt)==0){
@@ -40,7 +38,6 @@ plot_reverse_trend<- function(doseResponse_report,Dose_conditions=NULL,mz_tag = 
   } else{
     stop("Error occurs when matching ", rt_tag)
   }
-  
   new_index <- sort(mz[[1]],index.return = TRUE)$ix
   last_index <- tail(new_index,1)
   # creat pdf for printing
@@ -49,7 +46,7 @@ plot_reverse_trend<- function(doseResponse_report,Dose_conditions=NULL,mz_tag = 
   j=1
   # looping to plot
   for (i in new_index){
-    Normalized_intensity <- as.numeric(doseResponse_report$Normalized_intensities[i,])
+    Normalized_intensity <- as.numeric(doseResponse_report$Normalized_intensities[i,-1L])
     data <- data.frame(Doses=doses, Normalized_intensity=Normalized_intensity)
     a <- ggplot(data,aes(x=Doses,y=Normalized_intensity,group=1)) + geom_point(size=5,alpha=I(0.8),color="red",shape=19) + geom_line(stat = 'summary',fun.y=mean,size=1.2)
     #y tranform
@@ -76,6 +73,6 @@ plot_reverse_trend<- function(doseResponse_report,Dose_conditions=NULL,mz_tag = 
       j=1
     }
   }
-  cat("Plotting finished.\n")
   dev.off()
+  cat("Plotting finished. a pdf file is generated under:\n", getwd())
 }
