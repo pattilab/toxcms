@@ -1,5 +1,4 @@
-calcDoseStat = function(Feature, Dose_Levels, Feature, Dose_Levels, 
-                         multicomp = c("none","ttest","tukey","games-howell"), 
+calcDoseStat = function(Feature, Dose_Levels, multicomp = c("none","ttest","tukey","games-howell"), 
                          p.adjust.method=c("none","holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr"),...){
 
   # Initialization ----------------------------------------------------------
