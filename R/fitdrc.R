@@ -1,6 +1,6 @@
-fitdrc = function(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt_tag = "rtmed", export = TRUE, plot=TRUE, file = "doseResponseCurve.pdf",...){
+fitdrc = function(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt_tag = "rtmed", export = TRUE, plot = TRUE, file = "doseResponseCurve.pdf",...){
 
-  if(is.na(match(DoseResponse_report$trend,c("increase","decrease","mono")))){
+  if(is.na(match(DoseResponse_report$parameters$trend,c("increase","decrease","mono")))){
     cat("fitdrc function works with monotonous trend analysis, namely the ‘trend’ parameter should be 'increase', 'decrease' or 'mono'.\n")
     cat("Suggestion: Use plottrend() instead.\n")
     stop("Aborted")
@@ -11,7 +11,7 @@ fitdrc = function(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt
   
   if(plot==TRUE){
     cat("\nPlotting fitted curves...\n")
-  Feature <- doseResponse_report$Feature
+  Feature <- DoseResponse_report$Feature
   #index <- seq.int(nrow(Feature)) # generate index values
   mz <- Feature %>% dplyr::select(contains(mz_tag)) # get the m/z  from Feature
   rt <- Feature %>% dplyr::select(contains(rt_tag)) # get the rt from Feature
@@ -59,7 +59,9 @@ fitdrc = function(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt
   dev.off()
   cat("Plotting finished. A pdf file is generated under:\n", getwd())
 }
-  ED_value <- cbind(DoseResponse_report$statistic_basic$index,matrix(dr4pl_Fit_result[[2]],ncol=1))
+
+  ED_value <- cbind(DoseResponse_report$Feature$index,matrix(dr4pl_Fit_result[[2]],ncol=1))
   DoseResponse_report[["EDvalue"]] <- ED_value
+  DoseResponse_report$parameters[["ED"]] <- ED
   return(DoseResponse_report)
 }

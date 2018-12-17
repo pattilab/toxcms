@@ -1,5 +1,5 @@
-plottrend<- function(doseResponse_report,Dose_conditions=NULL,mz_tag = "mzmed", rt_tag = "rtmed",file="Reverse Reponse Curve.pdf", y_tranform=TRUE){
-  Dose_Replicates <- doseResponse_report$Dose_Replicates
+plottrend<- function(DoseResponse_report, Dose_conditions=NULL, y_tranform=TRUE, mz_tag = "mzmed", rt_tag = "rtmed",file="Reverse Reponse Curve.pdf"){
+  Dose_Replicates <- DoseResponse_report$Dose_Replicates
   if(is.null(Dose_conditions)){
     cat("Dose conditions are not specified. Previous dose names are applied.\n")
     Dose_conditions=names(Dose_Replicates)
@@ -12,8 +12,8 @@ plottrend<- function(doseResponse_report,Dose_conditions=NULL,mz_tag = "mzmed", 
   doses <- rep(Dose_conditions,times = Dose_Replicates)
   # assign doses as factor and assign dose levels for plotting
   doses <- factor(doses,levels=as.factor(Dose_conditions))
-  num_feature <- nrow(doseResponse_report$Feature)
-  Feature <- doseResponse_report$Feature
+  num_feature <- nrow(DoseResponse_report$Feature)
+  Feature <- DoseResponse_report$Feature
   
   mz <- Feature %>% dplyr::select(contains(mz_tag)) # get the m/z  from Feature
   rt <- Feature %>% dplyr::select(contains(rt_tag)) # get the rt from Feature
@@ -46,9 +46,9 @@ plottrend<- function(doseResponse_report,Dose_conditions=NULL,mz_tag = "mzmed", 
   j=1
   # looping to plot
   for (i in new_index){
-    Normalized_intensity <- as.numeric(doseResponse_report$Normalized_intensities[i,-1L])
-    data <- data.frame(Doses=doses, Normalized_intensity=Normalized_intensity)
-    a <- ggplot(data,aes(x=Doses,y=Normalized_intensity,group=1)) + geom_point(size=5,alpha=I(0.8),color="red",shape=19) + geom_line(stat = 'summary',fun.y=mean,size=1.2)
+    Normalized_Response <- as.numeric(DoseResponse_report$Normalized_Response[i,-1L])
+    data <- data.frame(Doses=doses, Normalized_Response=Normalized_Response)
+    a <- ggplot(data,aes(x=Doses,y=Normalized_Response,group=1)) + geom_point(size=5,alpha=I(0.8),color="red",shape=19) + geom_line(stat = 'summary',fun.y=mean,size=1.2)
     #y tranform
     if (y_tranform){
       a <- a + ggplot2::scale_y_sqrt()

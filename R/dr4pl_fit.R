@@ -1,9 +1,9 @@
-dr4pl_Fit <- function(doseResponse_report, ED=0.5, Dose_values,export = TRUE){
+dr4pl_Fit <- function(DoseResponse_report, ED=0.5, Dose_values,export = TRUE){
   
   if(!is.numeric(Dose_values)){
     stop("Dose input should be numeric.")
   }
-  Dose_Replicates <- doseResponse_report$Dose_Replicates
+  Dose_Replicates <- DoseResponse_report$Dose_Replicates
   
   if(length(Dose_values)!=length(Dose_Replicates)){
     cat("Dose values",Dose_values,"do not match",names(Dose_Replicates),".\n")
@@ -20,13 +20,13 @@ dr4pl_Fit <- function(doseResponse_report, ED=0.5, Dose_values,export = TRUE){
   }
   
   doses <- rep(Dose_values,times = Dose_Replicates)
-  num_feature <- nrow(doseResponse_report$Feature)
+  num_feature <- nrow(DoseResponse_report$Feature)
   
   # initiation
   dr4pl_objects <- list(rep(NaN,num_feature))
   ED_values <- rep(NaN,num_feature)
   
-  vals <- as.numeric(doseResponse_report$Normalized_intensities[,-1L])
+  vals <- as.numeric(DoseResponse_report$Normalized_Response[,-1L])
   # looping dr4pl and ED calculation
   for (i in 1: num_feature) {
     tryCatch({
@@ -41,13 +41,14 @@ dr4pl_Fit <- function(doseResponse_report, ED=0.5, Dose_values,export = TRUE){
   names(dr4pl_fit_result)[2]<-paste("ED",ED,sep="_") # rename ED_values to indicate ED used
   # combine ED values with original data
   if(export){
-    file_name <- paste(Sys.Date(),"pval",doseResponse_report$pval_cutoff,"pval_pass#",doseResponse_report$pval_thres,"relChange",doseResponse_report$relChange_cutoff,"anova_cutoff",doseResponse_report$anova_cutoff,"trend",doseResponse_report$trend,sep = "_")
-    a <- cbind(doseResponse_report$Feature,ED=dr4pl_fit_result[[2]])
+    file_name <- paste(Sys.Date(),"pval",DoseResponse_report$parameters$pval_cutoff,"pval_pass#",DoseResponse_report$parameters$pval_thres,"relChange",doseResponse_report$parameters$relChange_cutoff,"anova_cutoff",doseResponse_report$parameters$anova_cutoff,"trend",doseResponse_report$parameters$trend,sep = "_")
+    a <- cbind(DoseResponse_report$Feature,ED=dr4pl_fit_result[[2]])
     write.csv(a,paste(file_name,"features","with ED",ED,".csv",sep="_"))
     cat("\nResult is exported under:\n",getwd())
   }
   return(dr4pl_fit_result)
 }
+
 # function that calculate observed ED according to fitted parameters
   ObservedED <- function (ED, theta) {
     if(any(is.na(theta))) {

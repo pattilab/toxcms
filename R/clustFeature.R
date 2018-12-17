@@ -1,4 +1,4 @@
-clustFeature <- function(doseResponse_report, reference_index, sort.method = c("clust","range"), sort.thres = 20, 
+clustFeature <- function(DoseResponse_report, reference_index, sort.method = c("clust","range"), sort.thres = 20, 
                          dist.method = "euclidean", hclust.method = "average", mztag = "mzmed", rttag = "rtmed",
                          heatmap.on = FALSE, plot.all = FALSE,filename = "Heatmap.pdf",...){
   
@@ -8,13 +8,13 @@ clustFeature <- function(doseResponse_report, reference_index, sort.method = c("
   if (sort.method[1] == "dist"){
     cat("Extracting features based on distances...\n")
     if(sort.method[2]=="near"||sort.method[2] =="far"||sort.method[2]=="both"){
-    index_to_extract <- sortByDist(doseResponse_report, Index = reference_index, Sort.method = sort.method[2], Sort.thres = sort.thres, Dist.method = dist.method, Hclust.method = hclust.method, 
+    index_to_extract <- sortByDist(DoseResponse_report, Index = reference_index, Sort.method = sort.method[2], Sort.thres = sort.thres, Dist.method = dist.method, Hclust.method = hclust.method, 
                                    mz_tag = mztag, rt_tag = rttag, Heatmap.on = heatmap.on, Plot.all = plot.all, Filename = filename )
     } else {stop("The 'sort.method' for dist is not specified. Should be 'near', 'far' or 'both'.")}
   } else if (sort.method[1] == "clust") {
     cat("Extracting features based on herarchical clustering...\n")
     if(sort.method[2]=="layer"||sort.method[2] =="range"){
-    index_to_extract <- sortByClust(doseResponse_report, Index = reference_index, Sort.method = sort.method[2], Sort.thres = sort.thres, Dist.method = dist.method, Hclust.method = hclust.method, 
+    index_to_extract <- sortByClust(DoseResponse_report, Index = reference_index, Sort.method = sort.method[2], Sort.thres = sort.thres, Dist.method = dist.method, Hclust.method = hclust.method, 
                                     mz_tag = mztag, rt_tag = rttag, Heatmap.on= heatmap.on, Plot.all = plot.all, Filename = filename)
     } else { stop("The 'sort.method' for 'clust' is not specified. Should be 'layer' or 'range'. ") }
   } else { stop("The 'sort.method' do not exist.") }
@@ -24,7 +24,7 @@ clustFeature <- function(doseResponse_report, reference_index, sort.method = c("
   j=1
   for (i in reference_index){
     ind <- index_to_extract[[as.character(i)]]
-    Feature_i <- cbind(New_index = ind, doseResponse_report$Feature[ind,],doseResponse_report$Normalized_response[ind,-1L], doseResponse_report$statistic_basic[ind,-1L], doseResponse_report$trendCalc_result[ind,-1L])
+    Feature_i <- cbind(New_index = ind, DoseResponse_report$Feature[ind,],DoseResponse_report$Normalized_Response[ind,-1L], DoseResponse_report$stat[ind,-1L], cbind(doseResponse_report$pvalue,doseResponse_report$relChange, doseResponse_report$trendCalc_result)[ind,-1L])
     FeatureClust[[j]] <- Feature_i
     j=j+1
   }
@@ -126,7 +126,7 @@ sortByDist <- function(DoseResponse_report, Index, Sort.method=c("near","far","b
 sortByClust <- function(DoseResponse_report, Index, Sort.method = "layer", Sort.thres = 50, Dist.method="euclidean", Hclust.method = "average", 
                         mz_tag = mztag, rt_tag = rttag, Heatmap.on = FALSE, Plot.all=FALSE, Filename = "Heatmap.pdf",...){
 
-  dataset <- DoseResponse_report$Normalized_response[,-1L]
+  dataset <- DoseResponse_report$Normalized_Response[,-1L]
   clust <- dataset %>% dist(method=Dist.method) %>% hclust(method=Hclust.method)
   
   Index_to_extract = list()
