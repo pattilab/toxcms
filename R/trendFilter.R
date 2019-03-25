@@ -1,10 +1,10 @@
-trendFilter = function(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05,trend =c("increase","decrease","mono","reverse"),
+trendfilter = function(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05,trend =c("increase","decrease","mono","reverse","all"),
                        relChange_cutoff = NULL, export = FALSE){
 
   trend <- match.arg(trend)
   # trend calculations
-  pvalue <- DoseStat$pvalue[,3:(window+2)]
-  relChange <- DoseStat$relChange[,2:(window+2)]
+  pvalue <- DoseStat$pvalue[,c(-1L,-2L)]
+  relChange <- DoseStat$relChange[,-1L]
   pval_indicator <- pvalue %>% apply(2,function(x){ifelse(x<=pval_cutoff,1,0)})
   pval_sum <- rowSums(pval_indicator)
   relchange_indicator <- relChange %>% apply(2,function(x){ifelse(x<0,-1,1)}) #problematic when relchange = 0
@@ -14,7 +14,7 @@ trendFilter = function(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutof
 
   # if anova p value is assigned, filter anova p value
   if (is.numeric(anova_cutoff)){
-    index_aov <- which(DoseStat$statistic_multicomp$aov_pvalue<=anova_cutoff)
+    index_aov <- which(DoseStat$pvalue$aov_pvalue<=anova_cutoff)
     index_pval <- intersect(index_pval,index_aov)
   }
   # trend filter
@@ -26,6 +26,8 @@ trendFilter = function(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutof
     index_trend <- which(abs(trendCalc_result$trend_indicator) == trendCalc_result$pval_indicator)
   } else if (trend == "reverse") {
     index_trend <- which(abs(trendCalc_result$trend_indicator) != trendCalc_result$pval_indicator)
+  } else if (trend == "all"){
+    index_trend <- index_pval
   }
 
   if (is.numeric(relChange_cutoff) && !is.na(match(trend,c("increase","decrease","mono")))) {
@@ -40,6 +42,7 @@ trendFilter = function(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutof
     cat("There are ", length(index)," features remaining.")
   } else {
     cat("relChange_cutoff is not applied.\n")
+    relChange_cutoff <- NULL
     index <- intersect(index_trend, index_pval)
     cat("There are ", length(index)," features remaining.")
   }
@@ -49,13 +52,13 @@ trendFilter = function(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutof
   DoseResponse_report <- list(Feature = DoseStat$Feature[index,], Normalized_Response = DoseStat$Normalized_Response[index,],
                               stat = DoseStat$stat[index,], pvalue = DoseStat$pvalue[index,], relChange = DoseStat$relChange[index,],
                               trendCalc_result = trendCalc_result[index,], Dose_Levels = DoseStat$Dose_Levels, Dose_Replicates = DoseStat$Dose_Replicates,
-                              SampleInfo = DoseStat$SampleInfo, parameters <- parameters)
+                              SampleInfo = DoseStat$SampleInfo, parameters = parameters)
 
   if(export){
     file_name <- paste(Sys.Date(),"pval",pval_cutoff,"pval_pass#",pval_thres,"relChange",relChange_cutoff,"anova_cutoff",anova_cutoff,trend,sep = "_")
-    write.csv(doseResponse_report$Feature,paste(file_name,"features.csv",sep="_"))
-    write.csv(doseResponse_report$stat,paste(file_name,"statistic_basic.csv",sep="_"))
-    write.csv(cbind(doseResponse_report$pvalue,doseResponse_report$relChange, doseResponse_report$trendCalc_result),paste(file_name,"statistic_comparison.csv",sep="_"))
+    write.csv(DoseResponse_report$Feature,paste(file_name,"features.csv",sep="_"))
+    write.csv(DoseResponse_report$stat,paste(file_name,"statistic_basic.csv",sep="_"))
+    write.csv(cbind(DoseResponse_report$pvalue,DoseResponse_report$relChange, DoseResponse_report$trendCalc_result),paste(file_name,"statistic_comparison.csv",sep="_"))
    }
 
   return(DoseResponse_report)

@@ -26,11 +26,11 @@ dr4pl_Fit <- function(DoseResponse_report, ED=0.5, Dose_values,export = TRUE){
   dr4pl_objects <- list(rep(NaN,num_feature))
   ED_values <- rep(NaN,num_feature)
   
-  vals <- as.numeric(DoseResponse_report$Normalized_Response[,-1L])
   # looping dr4pl and ED calculation
   for (i in 1: num_feature) {
+    vals <- as.numeric(DoseResponse_report$Normalized_Response[i,-1L])
     tryCatch({
-      dr4pl_objects[[i]] <- dr4pl(vals[i,]~doses)
+      dr4pl_objects[[i]] <- dr4pl(vals~doses)
       theta <- dr4pl_objects[[i]]$parameters
       ED_values[i] <- ObservedED(ED,theta)
     },error = function(e){
@@ -41,10 +41,10 @@ dr4pl_Fit <- function(DoseResponse_report, ED=0.5, Dose_values,export = TRUE){
   names(dr4pl_fit_result)[2]<-paste("ED",ED,sep="_") # rename ED_values to indicate ED used
   # combine ED values with original data
   if(export){
-    file_name <- paste(Sys.Date(),"pval",DoseResponse_report$parameters$pval_cutoff,"pval_pass#",DoseResponse_report$parameters$pval_thres,"relChange",doseResponse_report$parameters$relChange_cutoff,"anova_cutoff",doseResponse_report$parameters$anova_cutoff,"trend",doseResponse_report$parameters$trend,sep = "_")
+    file_name <- paste(Sys.Date(),"pval",DoseResponse_report$parameters$pval_cutoff,"pval_pass#",DoseResponse_report$parameters$pval_thres,"relChange",DoseResponse_report$parameters$relChange_cutoff,"anova_cutoff",DoseResponse_report$parameters$anova_cutoff,"trend",DoseResponse_report$parameters$trend,sep = "_")
     a <- cbind(DoseResponse_report$Feature,ED=dr4pl_fit_result[[2]])
     write.csv(a,paste(file_name,"features","with ED",ED,".csv",sep="_"))
-    cat("\nResult is exported under:\n",getwd())
+    cat("\n Fitting result is exported under:\n",getwd())
   }
   return(dr4pl_fit_result)
 }

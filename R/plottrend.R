@@ -1,4 +1,4 @@
-plottrend<- function(DoseResponse_report, Dose_conditions=NULL, y_tranform=TRUE, mz_tag = "mzmed", rt_tag = "rtmed",file="Reverse Reponse Curve.pdf"){
+plottrend<- function(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE, mz_tag = "mzmed", rt_tag = "rtmed",file="Reverse Reponse Curve.pdf"){
   Dose_Replicates <- DoseResponse_report$Dose_Replicates
   if(is.null(Dose_conditions)){
     cat("Dose conditions are not specified. Previous dose names are applied.\n")
@@ -50,7 +50,7 @@ plottrend<- function(DoseResponse_report, Dose_conditions=NULL, y_tranform=TRUE,
     data <- data.frame(Doses=doses, Normalized_Response=Normalized_Response)
     a <- ggplot(data,aes(x=Doses,y=Normalized_Response,group=1)) + geom_point(size=5,alpha=I(0.8),color="red",shape=19) + geom_line(stat = 'summary',fun.y=mean,size=1.2)
     #y tranform
-    if (y_tranform){
+    if (y_transform){
       a <- a + ggplot2::scale_y_sqrt()
     }
     # Set parameters for background
