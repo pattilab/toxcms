@@ -47,9 +47,11 @@ clusttrend uses either distance similarity for
 }
 \examples{
 #Extract 20 most similar trends of trend #308, #61 and #85 by hierarchical clustering on trend. Distance matrice and Clustering method are default.
-clust <- clusttrend(doseresponse_report, reference_index = c(308,61,85), sort.method = c("clust","range")), sort.thres = 20, mztag ="mzmed", rttag="rtmed". heatmap.on=TRUE, plot.all=TRUE, export=TRUE, filename="trendcluster_20.pdf")
+clust <- clusttrend(doseresponse_report, reference_index = c(308,61,85), sort.method = c("clust","range")), sort.thres = 20,
+mztag ="mzmed", rttag="rtmed". heatmap.on=TRUE, plot.all=TRUE, export=TRUE, filename="trendcluster_20.pdf")
 #Extract 10\% of all trends that are most similar to trend #308, #61, #85 by manhattan distance matrice.
-clust <- clusttrend(doseresponse_report, reference_index = c(308,61,85), sort.method = c("dist","range")), sort.thres = 20, mztag ="mzmed", rttag="rtmed". heatmap.on=TRUE, plot.all=TRUE, export=TRUE, filename="trendcluster_20.pdf")
+clust <- clusttrend(doseresponse_report, reference_index = c(308,61,85), sort.method = c("dist","range")), sort.thres = 20,
+mztag ="mzmed", rttag="rtmed". heatmap.on=TRUE, plot.all=TRUE, export=TRUE, filename="trendcluster_20.pdf")
 }
 \author{
 Lingjue Wang (Mike) <wang.lingjue@wustl.edu>

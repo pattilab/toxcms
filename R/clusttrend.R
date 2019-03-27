@@ -1,8 +1,7 @@
 #' Clustering trend for metabolomic dose-response analysis (TOXcms step 3)
 #'
 #' @description This function applies similarity matrices and hierarchical clustering to group metabolomic trends based on the similarity and dissimilarity in their dose-dependent responses.
-#' @usgae clust <- clusttrend(doseresponse_report, reference_index = c(308,61,27,26), sort.method = c("clust","range"), sort.thres = 40, dist.method = "euclidean", hclust.method = "single",
-#' mztag = "mzmed", rttag = "rtmed", heatmap.on = TRUE, plot.all = TRUE, filename = "selected_AC_reference_plot_single.pdf")
+#' @usgae clust <- clusttrend(doseresponse_report, reference_index = c(308,61,27,26), sort.method = c("clust","range"), sort.thres = 40, dist.method = "euclidean", hclust.method = "single", mztag = "mzmed", rttag = "rtmed", heatmap.on = TRUE, plot.all = TRUE, filename = "selected_AC_reference_plot_single.pdf")
 #' @param DoseResponse_report This is the output of trendfilter(), the end of toxcms step 2.
 #' @param reference_index This is the indices of the reference trends. clusttrend() apply the algorithm for each of the reference index.
 #' @param sort.method a two-element vector indicating the sorting methods. The first element can be either "dist" or "clust". If the first element is "dist", the second element can be "far","near" or "both".
