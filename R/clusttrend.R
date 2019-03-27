@@ -1,20 +1,48 @@
-clusttrend <- function(DoseResponse_report, reference_index=NULL, sort.method = c("clust","layer"), sort.thres = 20, 
+#' Clustering trend for metabolomic dose-response analysis (TOXcms step 3)
+#'
+#' @description This function applies similarity matrices and hierarchical clustering to group metabolomic trends based on the similarity and dissimilarity in their dose-dependent responses.
+#' @usgae clust <- clusttrend(doseresponse_report, reference_index = c(308,61,27,26), sort.method = c("clust","range"), sort.thres = 40, dist.method = "euclidean", hclust.method = "single",
+#' mztag = "mzmed", rttag = "rtmed", heatmap.on = TRUE, plot.all = TRUE, filename = "selected_AC_reference_plot_single.pdf")
+#' @param DoseResponse_report This is the output of trendfilter(), the end of toxcms step 2.
+#' @param reference_index This is the indices of the reference trends. clusttrend() apply the algorithm for each of the reference index.
+#' @param sort.method a two-element vector indicating the sorting methods. The first element can be either "dist" or "clust". If the first element is "dist", the second element can be "far","near" or "both".
+#' If the first element is "clust", then the second-element can be “range" or "layer".
+#' @param sort.thres a numeric number, indicating the sorting threshold for each group. Can be a fraction number smaller than 1 or a positibe integer larger than 1.
+#' @param dist.method  Matrice used for similarity calculation. See also \link[stats]{dist}.
+#' @param hclust.method Methods for hierarchical clustering. See also \link[stats]{hlust}/
+#' @param mztag name of the m/z column in the feature table.
+#' @param rttag name of the retention time column in the feature table.
+#' @param heatmap.on a TRUE/FALSE value indicating whether heatmap shoudld be generated.
+#' @param plot.all a TRUE/FALSE value indicating whether a heatmap of all trends should be generated.
+#' @param export a TRUE/FALSE value indicating whetehr the trend clusters should be exported to a csv. file.
+#' @param filename a character indicating the name of the exported csv file.
+#' @details clusttrend uses either distance similarity for
+#' @return clusttrend returns a list object, within wich each element is a trend cluster. The name of each element is the reference_index. Heatmap visualization of all trend clusters will be generated if heatmap.on=TRUE.
+#' @author Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
+#' Cong-Hui Yao <conghui.yao@wustl.edu>
+#' @examples
+#' #Extract 20 most similar trends of trend #308, #61 and #85 by hierarchical clustering on trend. Distance matrice and Clustering method are default.
+#' clust <- clusttrend(doseresponse_report, reference_index = c(308,61,85), sort.method = c("clust","range")), sort.thres = 20, mztag ="mzmed", rttag="rtmed". heatmap.on=TRUE, plot.all=TRUE, export=TRUE, filename="trendcluster_20.pdf")
+#' #Extract 10% of all trends that are most similar to trend #308, #61, #85 by manhattan distance matrice.
+#' clust <- clusttrend(doseresponse_report, reference_index = c(308,61,85), sort.method = c("dist","range")), sort.thres = 20, mztag ="mzmed", rttag="rtmed". heatmap.on=TRUE, plot.all=TRUE, export=TRUE, filename="trendcluster_20.pdf")
+#' @export
+clusttrend <- function(DoseResponse_report, reference_index=NULL, sort.method = c("clust","layer"), sort.thres = 20,
                          dist.method = "euclidean", hclust.method = "average", mztag = "mzmed", rttag = "rtmed",
                          heatmap.on = FALSE, plot.all = FALSE,export=TRUE, filename = "Heatmap.pdf",...){
-  
+
   # sort.method are c("dist","both"/"far"/"near") c("clust","range"/"layer")
   if(!is.null(reference_index)) {
-    
+
     if (sort.method[1] == "dist"){
     cat("Sorting feature trends by distances...\n")
       if(sort.method[2]=="near"||sort.method[2] =="far"||sort.method[2]=="both"){
-      index_to_extract <- sortByDist(DoseResponse_report, Index = reference_index, Sort.method = sort.method[2], 
+      index_to_extract <- sortByDist(DoseResponse_report, Index = reference_index, Sort.method = sort.method[2],
                                      Sort.thres = sort.thres, Dist.method = dist.method, Hclust.method = hclust.method)
       } else {stop("The 'sort.method' for dist is not specified. Should be 'near', 'far' or 'both'.")}
     } else if (sort.method[1] == "clust") {
     cat("Sorting feature trends by herarchical clustering...\n")
       if(sort.method[2]=="layer"||sort.method[2] =="range"){
-      index_to_extract <- sortByClust(DoseResponse_report, Index = reference_index, Sort.method = sort.method[2], 
+      index_to_extract <- sortByClust(DoseResponse_report, Index = reference_index, Sort.method = sort.method[2],
                                       Sort.thres = sort.thres, Dist.method = dist.method, Hclust.method = hclust.method)
       } else { stop("The 'sort.method' for 'clust' is not specified. Should be 'layer' or 'range'. ") }
     } else { stop("The 'sort.method' do not exist.") }
@@ -24,7 +52,7 @@ clusttrend <- function(DoseResponse_report, reference_index=NULL, sort.method = 
     warning("When sorting all trends,'sort.method' are enforced to be 'clust-layer'. ")
     sort.method = c("clust","layer")
     }
-  index_to_extract <- sortByClust(DoseResponse_report, Index = reference_index, Sort.method = sort.method[2], 
+  index_to_extract <- sortByClust(DoseResponse_report, Index = reference_index, Sort.method = sort.method[2],
                                   Sort.thres = sort.thres, Dist.method = dist.method, Hclust.method = hclust.method)
   }
 # indexes of reference features for each cluster
@@ -39,7 +67,7 @@ j=1
   }
 # names are feature index
 names(FeatureClust) <- names(index_to_extract)
-  
+
 # mztag and rttag search
 mz <- DoseResponse_report$Feature %>% dplyr::select(contains(mztag)) # get the m/z from Feature
 rt <- DoseResponse_report$Feature %>% dplyr::select(contains(rttag)) # get the rt from Feature
@@ -69,26 +97,26 @@ rt <- round(rt)
     pdf(file = filename, width = 8.5, height = 11)
     colLabel <- rep(names(DoseResponse_report$Dose_Replicates),times=DoseResponse_report$Dose_Replicates)
     if(plot.all==T){
-    heatmap.2(as.matrix(dataset), Colv = FALSE, margins = c(10,10), distfun = function(x) dist(x,method=dist.method), hclustfun = function(x) hclust(x,method=hclust.method), 
+    heatmap.2(as.matrix(dataset), Colv = FALSE, margins = c(10,10), distfun = function(x) dist(x,method=dist.method), hclustfun = function(x) hclust(x,method=hclust.method),
               main = paste("Hierarchical Clustering of ",nrow(dataset)," features",sep = ""), dendrogram = 'row',
               labCol = colLabel, trace="none", key=TRUE, keysize=1.3, key.title = "Scale")
-    } 
+    }
     for(i in ref_index){
     ind <- index_to_extract[[as.character(i)]]
     mz_plot <- as.numeric(unlist(mz[ind,]))
     rt_plot <- as.numeric(unlist(rt[ind,]))
     labrow <- paste0(ind, "_", sprintf("%.4f", mz_plot),"_",rt_plot)
-    heatmap.2(as.matrix(dataset[ind,]), Colv = FALSE, margins = c(10,10), distfun = function(x) dist(x,method=dist.method), hclustfun = function(x) hclust(x,method=hclust.method), 
-              main = paste("Feature #",i," mz=", mz[i], " rt=", rt[i], sep = ""), dendrogram = 'row', 
+    heatmap.2(as.matrix(dataset[ind,]), Colv = FALSE, margins = c(10,10), distfun = function(x) dist(x,method=dist.method), hclustfun = function(x) hclust(x,method=hclust.method),
+              main = paste("Feature #",i," mz=", mz[i], " rt=", rt[i], sep = ""), dendrogram = 'row',
               labCol = colLabel, labRow = labrow, trace="none",key=TRUE, keysize=1.2, key.title = "Scale")
     }
-  cat("Heatmap is generated under: \n",getwd())  
+  cat("Heatmap is generated under: \n",getwd())
   dev.off()
   }
 return(FeatureClust)
-} 
+}
 
-sortByDist <- function(DoseResponse_report, Index, Sort.method=c("near","far","both"), 
+sortByDist <- function(DoseResponse_report, Index, Sort.method=c("near","far","both"),
                        Sort.thres = 20, Dist.method = "euclidean", Hclust.method = "average",...){
 
 Sort.method = match.arg(Sort.method)
@@ -121,10 +149,10 @@ names(Index_to_extract) <- as.character(Index)
 return(Index_to_extract)
 }
 
-sortByClust <- function(DoseResponse_report, Index, Sort.method = c("layer","range"), 
+sortByClust <- function(DoseResponse_report, Index, Sort.method = c("layer","range"),
                         Sort.thres = 50, Dist.method="euclidean", Hclust.method = "average",...){
 Sort.method = match.arg(Sort.method)
-dataset <- DoseResponse_report$Normalized_Response[,-1L]  
+dataset <- DoseResponse_report$Normalized_Response[,-1L]
 clust <- dataset %>% dist(method=Dist.method) %>% hclust(method=Hclust.method)
 Index_to_extract = list()
 .j=1
@@ -133,10 +161,10 @@ Index_to_extract = list()
   Index = numeric()
     if(Sort.thres >=1 && Sort.thres%%1==0 && Sort.thres <= length(clust$order)){
     cat(nrow(dataset),"trends will be sorted into",Sort.thres,"clusters...\n")
-    } else { 
+    } else {
     Warning("'sort.thres' must be a positive integer no larger than number of features. Set to 50 by default and continute...")
     Sort.thres=50
-    } 
+    }
   clust_Index <- cutree(clust, k=Sort.thres)
     for( .ind in unique(clust_Index)){
     Index_to_extract_i <- which(clust_Index == .ind)
@@ -160,11 +188,11 @@ Index_to_extract = list()
     } else if (Sort.method == "range"){
       if (Sort.thres <1 && Sort.thres>0) {
       length_to_extract <- clust$dist %>% as.matrix %>% nrow %>% `*`(Sort.thres) %>% ceiling
-      } else if (Sort.thres >=1 && Sort.thres%%1==0 && Sort.thres <= length(clust$order)){ 
+      } else if (Sort.thres >=1 && Sort.thres%%1==0 && Sort.thres <= length(clust$order)){
       length_to_extract <- Sort.thres
       } else { stop("When using 'clust-range' method, the 'sort.thres' must be a fraction or a positive integer less than number of features.")}
     tree <- cutree(clust,k=1:nrow(dataset))
-    # for each index, find the target cluster that has at least `length_to_extract` features  
+    # for each index, find the target cluster that has at least `length_to_extract` features
       for (i in Index) {
       numFeature_per_layer <- apply(tree,2,function(x) length(which(x==x[i])))
       # find the first layer from highest that contains no more than length_to_extract number of features
@@ -173,7 +201,7 @@ Index_to_extract = list()
       Index_to_extract_i <- which(clust_Index == clust_Index[i])
       Index_to_extract[[.j]] <- Index_to_extract_i
       .j=.j+1
-      }    
+      }
     } else { stop("The specified 'sort.method' does not exist.") }
   names(Index_to_extract) <- as.character(Index)
   }
