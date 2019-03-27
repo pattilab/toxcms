@@ -16,9 +16,9 @@
 #' feature <- data.table(read.csv("RPLC_POS_dose_multianal.csv"))
 #' DoseStat <- calcDoseStat(feature, Dose_Levels = c("_0uM","_10uM","_50uM","_200uM"),
 #'             multicomp = "none", p.adjust.method = "none")
-#' @import("maggrittr")
-#' @importFrom("stats","aov","pairwise.t.test","sd")
-#' @importFrom("userfriendlyscience","posthocTGH")
+#' @import magrittr
+#' @importFrom stats aov pairwise.t.test sd
+#' @importFrom userfriendlyscience posthocTGH
 #' @export
 
 calcdosestat = function(Feature, Dose_Levels, multicomp = c("none","ttest","tukey","games-howell"),
@@ -63,7 +63,7 @@ ResponseX <- Feature %>% dplyr::select(contains(DoseX)) # get the raw response v
   Response = cbind(Response,ResponseX)           # data clean-up
   Dose_Replicates[DoseX] <- length(ResponseX)    # number of replicates in doseX
   meanX <- apply(ResponseX, MARGIN = 1, mean) # calculate the mean in doseX
-  stdX <- apply(ResponseX, MARGIN = 1, sd) # calculate the std in doseX
+  stdX <- apply(ResponseX, MARGIN = 1, stats::sd) # calculate the std in doseX
   cvX <- stdX / meanX # calculate the coefficient of variance
   mean <- cbind(mean,meanX)
   std <- cbind(std,stdX)
@@ -99,20 +99,20 @@ dose_levels <- factor(rep(Dose_Levels,times=Dose_Replicates),levels=Dose_Levels)
 dose_pair <- combn(unique(as.character(dose_levels)),2, paste,collapse="&")
 
 # anova
-aov_pvalue <- apply(Normalized_Response[,-1L], MARGIN =1, function(x) {a=aov(as.numeric(x)~dose_levels); return(as.numeric(unlist(summary(a))["Pr(>F)1"]))})
+aov_pvalue <- apply(Normalized_Response[,-1L], MARGIN =1, function(x) {a=stats::aov(as.numeric(x)~dose_levels); return(as.numeric(unlist(summary(a))["Pr(>F)1"]))})
 
 # statictical test for p value
 if(multicomp == "none"){
 pairwise_pvalue <- apply(Normalized_Response[,-1L], MARGIN = 1, function(x) {
-                  p <- pairwise.t.test(x,dose_levels, pool.sd=FALSE, p.adjust.method="none")$p.value
+                  p <- stats::pairwise.t.test(x,dose_levels, pool.sd=FALSE, p.adjust.method="none")$p.value
                   p <- p[lower.tri(p,diag=TRUE)]; return(p)})
 } else if(multicomp =="ttest"){
 pairwise_pvalue <- apply(Normalized_Response[,-1L], MARGIN = 1, function(x) {
-                  p <- pairwise.t.test(x,dose_levels, pool.sd=FALSE, p.adjust.method=p.adjust.method)$p.value
+                  p <- stats::pairwise.t.test(x,dose_levels, pool.sd=FALSE, p.adjust.method=p.adjust.method)$p.value
                   p <- p[lower.tri(p,diag=TRUE)]; return(p)})
 } else{
 pairwise_pvalue <- apply(Normalized_Response[,-1L], MARGIN = 1, function(x) {
-                  p <- posthocTGH(x,dose_levels, method=multicomp, conf.level=0.95)$output[[ifelse(multicomp=="tukey",1,2)]]$p; return(p)}) # extract p value: first output(1) is tukey, second(2) is games-howell
+                  p <- userfriendlyscience::posthocTGH(x,dose_levels, method=multicomp, conf.level=0.95)$output[[ifelse(multicomp=="tukey",1,2)]]$p; return(p)}) # extract p value: first output(1) is tukey, second(2) is games-howell
 }
 pairwise_pvalue <- t(pairwise_pvalue)
 pairwise_pvalue[is.nan(pairwise_pvalue)] <- 1 # maximum pvalue is 1.
@@ -166,11 +166,11 @@ return(DoseStat)
 #' Auto scaling ("auto") focuses on data correlation and data is centered to 0 with a standard deviation of 1, (x-mean)/std; Pareto scaling ("pareto") focuses on data correlation and discriminates large fold-chanegs, (x-mean)/(sqrt(std));
 #' Vast scaling ("vast") focuses on less varying data and discriminates largely varying data, (x-mean)/(std*cv); Level scaling ("level") focuses on fold changes against the mean value, (x-mean)/mean;
 #' log10 or log2 transformation ("log10","log2") focuses on scaling the exponential relationship to a linear model, and centering data at the mean; squart root ("sqrt") is a pesudo scaling for positive values only.
-#' @importFrom("stats","sd")
+#' @importFrom stats sd
 normalization <- function(data,Norm.method="range",...){
   data <- as.matrix(data)
   mean <- apply(data,MARGIN = 1,mean)
-  std <- apply(data,MARGIN=1,sd)
+  std <- apply(data,MARGIN=1,stats::sd)
   max <- apply(data,MARGIN=1,max)
   min <- apply(data,MARGIN=1,min)
   range <- max-min

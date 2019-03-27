@@ -22,9 +22,15 @@
 #' Cong-Hui Yao <conghui.yao@wustl.edu>
 #' @examples
 #' #Extract 20 most similar trends of trend #308, #61 and #85 by hierarchical clustering on trend. Distance matrice and Clustering method are default.
-#' clust <- clusttrend(doseresponse_report, reference_index = c(308,61,85), sort.method = c("clust","range")), sort.thres = 20, mztag ="mzmed", rttag="rtmed". heatmap.on=TRUE, plot.all=TRUE, export=TRUE, filename="trendcluster_20.pdf")
+#' clust <- clusttrend(doseresponse_report, reference_index = c(308,61,85), sort.method = c("clust","range")), sort.thres = 20,
+#' mztag ="mzmed", rttag="rtmed". heatmap.on=TRUE, plot.all=TRUE, export=TRUE, filename="trendcluster_20.pdf")
 #' #Extract 10% of all trends that are most similar to trend #308, #61, #85 by manhattan distance matrice.
-#' clust <- clusttrend(doseresponse_report, reference_index = c(308,61,85), sort.method = c("dist","range")), sort.thres = 20, mztag ="mzmed", rttag="rtmed". heatmap.on=TRUE, plot.all=TRUE, export=TRUE, filename="trendcluster_20.pdf")
+#' clust <- clusttrend(doseresponse_report, reference_index = c(308,61,85), sort.method = c("dist","range")), sort.thres = 20,
+#' mztag ="mzmed", rttag="rtmed". heatmap.on=TRUE, plot.all=TRUE, export=TRUE, filename="trendcluster_20.pdf")
+#' @importFrom stats hclust dist cutree
+#' @import ggplot2
+#' @import magrittr
+#' @importFrom gplots heatmap.2
 #' @export
 clusttrend <- function(DoseResponse_report, reference_index=NULL, sort.method = c("clust","layer"), sort.thres = 20,
                          dist.method = "euclidean", hclust.method = "average", mztag = "mzmed", rttag = "rtmed",
@@ -97,7 +103,7 @@ rt <- round(rt)
     pdf(file = filename, width = 8.5, height = 11)
     colLabel <- rep(names(DoseResponse_report$Dose_Replicates),times=DoseResponse_report$Dose_Replicates)
     if(plot.all==T){
-    heatmap.2(as.matrix(dataset), Colv = FALSE, margins = c(10,10), distfun = function(x) dist(x,method=dist.method), hclustfun = function(x) hclust(x,method=hclust.method),
+    gplots::heatmap.2(as.matrix(dataset), Colv = FALSE, margins = c(10,10), distfun = function(x) stats::dist(x,method=dist.method), hclustfun = function(x) stats::hclust(x,method=hclust.method),
               main = paste("Hierarchical Clustering of ",nrow(dataset)," features",sep = ""), dendrogram = 'row',
               labCol = colLabel, trace="none", key=TRUE, keysize=1.3, key.title = "Scale")
     }
@@ -106,7 +112,7 @@ rt <- round(rt)
     mz_plot <- as.numeric(unlist(mz[ind,]))
     rt_plot <- as.numeric(unlist(rt[ind,]))
     labrow <- paste0(ind, "_", sprintf("%.4f", mz_plot),"_",rt_plot)
-    heatmap.2(as.matrix(dataset[ind,]), Colv = FALSE, margins = c(10,10), distfun = function(x) dist(x,method=dist.method), hclustfun = function(x) hclust(x,method=hclust.method),
+    gplots::heatmap.2(as.matrix(dataset[ind,]), Colv = FALSE, margins = c(10,10), distfun = function(x) stats::dist(x,method=dist.method), hclustfun = function(x) stats::hclust(x,method=hclust.method),
               main = paste("Feature #",i," mz=", mz[i], " rt=", rt[i], sep = ""), dendrogram = 'row',
               labCol = colLabel, labRow = labrow, trace="none",key=TRUE, keysize=1.2, key.title = "Scale")
     }
@@ -121,7 +127,7 @@ sortByDist <- function(DoseResponse_report, Index, Sort.method=c("near","far","b
 
 Sort.method = match.arg(Sort.method)
 dataset <- DoseResponse_report$Normalized_Response[,-1L]
-dist <- dataset %>% dist(method=Dist.method) %>% as.matrix
+dist <- dataset %>% stats::dist(method=Dist.method) %>% as.matrix
 # calculate number of features to be exrtacted and clustered
   if(Sort.thres<1 && Sort.thres>0){
     length_to_extract <- dist %>% nrow %>% `*`(Sort.thres) %>% ceiling
@@ -153,7 +159,7 @@ sortByClust <- function(DoseResponse_report, Index, Sort.method = c("layer","ran
                         Sort.thres = 50, Dist.method="euclidean", Hclust.method = "average",...){
 Sort.method = match.arg(Sort.method)
 dataset <- DoseResponse_report$Normalized_Response[,-1L]
-clust <- dataset %>% dist(method=Dist.method) %>% hclust(method=Hclust.method)
+clust <- dataset %>% stats::dist(method=Dist.method) %>% stats::hclust(method=Hclust.method)
 Index_to_extract = list()
 .j=1
 
@@ -165,7 +171,7 @@ Index_to_extract = list()
     Warning("'sort.thres' must be a positive integer no larger than number of features. Set to 50 by default and continute...")
     Sort.thres=50
     }
-  clust_Index <- cutree(clust, k=Sort.thres)
+  clust_Index <- stats::cutree(clust, k=Sort.thres)
     for( .ind in unique(clust_Index)){
     Index_to_extract_i <- which(clust_Index == .ind)
       if(length(Index_to_extract_i)==1) next;
@@ -178,7 +184,7 @@ Index_to_extract = list()
     if(Sort.method == "layer"){
       if(Sort.thres >=1 && Sort.thres%%1==0 && Sort.thres <= length(clust$order)){
       cat(nrow(dataset),"trends will be sorted into",Sort.thres,"clusters...\n")
-      clust_Index <- cutree(clust, k=Sort.thres)
+      clust_Index <- stats::cutree(clust, k=Sort.thres)
         for(i in Index){
         Index_to_extract_i <- which(clust_Index == clust_Index[i])
         Index_to_extract[[.j]] <- Index_to_extract_i
@@ -191,7 +197,7 @@ Index_to_extract = list()
       } else if (Sort.thres >=1 && Sort.thres%%1==0 && Sort.thres <= length(clust$order)){
       length_to_extract <- Sort.thres
       } else { stop("When using 'clust-range' method, the 'sort.thres' must be a fraction or a positive integer less than number of features.")}
-    tree <- cutree(clust,k=1:nrow(dataset))
+    tree <- stats::cutree(clust,k=1:nrow(dataset))
     # for each index, find the target cluster that has at least `length_to_extract` features
       for (i in Index) {
       numFeature_per_layer <- apply(tree,2,function(x) length(which(x==x[i])))

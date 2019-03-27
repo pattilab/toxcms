@@ -21,7 +21,7 @@
 #' dr_report <- trendfilter(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05, trend = "mono", relChange_cutoff = NULL, export = TRUE)
 #' # relative change cutoff added (only applied to monotonic trends)
 #' dr_report <- trendfilter(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05, trend = "mono", relChange_cutoff = 0.05, export = TRUE)
-#' @import("maggrittr")
+#' @import magrittr
 #' @export
 trendfilter = function(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05,trend =c("increase","decrease","mono","reverse","all"),
                        relChange_cutoff = NULL, export = FALSE){
