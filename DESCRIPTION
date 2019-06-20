@@ -16,6 +16,7 @@ Imports:
     magrittr,
     data.table,
     dr4pl,
+    dplyr,
     userfriendlyscience,
     stats,
     gplots,
@@ -25,8 +26,7 @@ Imports:
 Suggests:
     xcms,
     rmarkdown,
-    readr,
-    dplyr
+    readr
 URL: https://github.com/pattilab/toxcms
 BugReports: https://github.com/pattilab/toxcms/issues
 License: GPL-3 + file LICENSE

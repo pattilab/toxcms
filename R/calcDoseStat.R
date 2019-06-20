@@ -14,7 +14,7 @@
 #' @return calcdosestat returns a list object consisting all the statistical results described above.
 #' @author Cong-Hui Yao <conghui.yao@wustl.edu>
 #' Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
-#' @import magrittr data.table
+#' @import magrittr data.table dplyr
 #' @importFrom stats aov pairwise.t.test sd
 #' @importFrom userfriendlyscience posthocTGH
 #' @export

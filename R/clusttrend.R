@@ -21,7 +21,7 @@
 #' @return clusttrend returns a list object, within wich each element is a trend cluster. The name of each element is the reference_index. Heatmap visualization of all trend clusters will be generated if heatmap.on=TRUE.
 #' @author Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
 #' Cong-Hui Yao <conghui.yao@wustl.edu>
-#' @import ggplot2 magrittr grDevices data.table gridExtra
+#' @import ggplot2 magrittr grDevices data.table gridExtra dplyr
 #' @importFrom stats hclust dist cutree
 #' @importFrom gplots heatmap.2
 #' @export
