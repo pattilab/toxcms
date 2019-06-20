@@ -3,20 +3,18 @@
 #' @description The function calcdosestat() performs statistical analysis on metabolic responses at diffrent dose levels. Basic statistics of each dose level is calculated.
 #' MS raw intensities of each feature are normalized by range scaling (x-min/max-min). ANOVA and multigroup testing are performed to obtain p-values and relative changes
 #' among dose levels. The output is called dosestat.
-#' @usage dosestat <- calcdosestat(feature,Dose_Levels=c("_0uM","_10uM","_50uM","200uM),multicomp="none",p.adjust.method="none)
+#' @usage calcdosestat(Feature, Dose_Levels, multicomp = c("none","ttest","tukey","games-howell"),
+#' p.adjust.method = c("none","holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr"),...)
 #' @param Feature data.table a feature table including basic information (m/z, retention time, etc) and MS raw intensities among all dose levels.
 #' @param Dose_levels character Keywords indicating ordered dose levels in feature table. The dose levels should be ordered incrementally.
 #' @param multicomp options for multigroup testing of significant difference. "none"- Welch t-test on adjacent doses; "ttest" - pairwise Welch t-test among all doses;
 #' "tukey"/"games-howell" - post-hoc tests followed by ANOVA.
 #' @param p.adjust.method p-value adjustment for false-positive reduction in multiple testing. See also \link[stats]{p.adjust}
+#' @param ... Further arguments to be passed to calcdosestat.
 #' @return calcdosestat returns a list object consisting all the statistical results described above.
 #' @author Cong-Hui Yao <conghui.yao@wustl.edu>
 #' Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
-#' @examples library(toxcms)
-#' feature <- data.table(read.csv("RPLC_POS_dose_multianal.csv"))
-#' DoseStat <- calcDoseStat(feature, Dose_Levels = c("_0uM","_10uM","_50uM","_200uM"),
-#'             multicomp = "none", p.adjust.method = "none")
-#' @import magrittr
+#' @import magrittr data.table
 #' @importFrom stats aov pairwise.t.test sd
 #' @importFrom userfriendlyscience posthocTGH
 #' @export
@@ -159,14 +157,16 @@ return(DoseStat)
 #' Row-wise data normalization and transformation
 #'
 #' @description Perform row-wise data normalization or transformation of a given data.matrix. Return a data.matrix with normalized values.
-#' @usage normalization(data,Norm.method="range")
+#' @usage normalization(data,Norm.method="range",...)
 #' @param data a matrix of numerical values.
 #' @param Norm.method normalization methods to be applied. By default using range scaling. See details for further information.
+#' @param ... Further arguments to be passed to normalization.
 #' @details normalization() applies a series of commonly used metrices for data normalization. Range scaling ("range") focuses on data correlation and restricted the values in between 0 to 1, (x-min)/(max-min);
 #' Auto scaling ("auto") focuses on data correlation and data is centered to 0 with a standard deviation of 1, (x-mean)/std; Pareto scaling ("pareto") focuses on data correlation and discriminates large fold-chanegs, (x-mean)/(sqrt(std));
 #' Vast scaling ("vast") focuses on less varying data and discriminates largely varying data, (x-mean)/(std*cv); Level scaling ("level") focuses on fold changes against the mean value, (x-mean)/mean;
 #' log10 or log2 transformation ("log10","log2") focuses on scaling the exponential relationship to a linear model, and centering data at the mean; squart root ("sqrt") is a pesudo scaling for positive values only.
 #' @importFrom stats sd
+
 normalization <- function(data,Norm.method="range",...){
   data <- as.matrix(data)
   mean <- apply(data,MARGIN = 1,mean)

@@ -4,11 +4,9 @@
 \alias{clusttrend}
 \title{Clustering trend for metabolomic dose-response analysis (TOXcms step 3)}
 \usage{
-clusttrend(DoseResponse_report, reference_index = NULL,
-  sort.method = c("clust", "layer"), sort.thres = 20,
-  dist.method = "euclidean", hclust.method = "average", mztag = "mzmed",
-  rttag = "rtmed", heatmap.on = FALSE, plot.all = FALSE, export = TRUE,
-  filename = "Heatmap.pdf", ...)
+(DoseResponse_report, reference_index=NULL, sort.method = c("clust","layer"), sort.thres = 20,
+dist.method = "euclidean", hclust.method = "average", mz_tag = "mzmed", rt_tag = "rtmed",
+heatmap.on = FALSE, plot.all = FALSE,export=TRUE, filename = "Heatmap.pdf",...)
 }
 \arguments{
 \item{DoseResponse_report}{This is the output of trendfilter(), the end of toxcms step 2.}
@@ -22,11 +20,11 @@ If the first element is "clust", then the second-element can be “range" or "la
 
 \item{dist.method}{Matrice used for similarity calculation. See also \link[stats]{dist}.}
 
-\item{hclust.method}{Methods for hierarchical clustering. See also \link[stats]{hlust}/}
+\item{hclust.method}{Methods for hierarchical clustering. See also \link[stats]{hlust}.}
 
-\item{mztag}{name of the m/z column in the feature table.}
+\item{mz_tag}{name of the m/z column in the feature table.}
 
-\item{rttag}{name of the retention time column in the feature table.}
+\item{rt_tag}{name of the retention time column in the feature table.}
 
 \item{heatmap.on}{a TRUE/FALSE value indicating whether heatmap shoudld be generated.}
 
@@ -35,23 +33,14 @@ If the first element is "clust", then the second-element can be “range" or "la
 \item{export}{a TRUE/FALSE value indicating whetehr the trend clusters should be exported to a csv. file.}
 
 \item{filename}{a character indicating the name of the exported csv file.}
+
+\item{...}{Further arguments to be passed to clusttrend.}
 }
 \value{
 clusttrend returns a list object, within wich each element is a trend cluster. The name of each element is the reference_index. Heatmap visualization of all trend clusters will be generated if heatmap.on=TRUE.
 }
 \description{
 This function applies similarity matrices and hierarchical clustering to group metabolomic trends based on the similarity and dissimilarity in their dose-dependent responses.
-}
-\details{
-clusttrend uses either distance similarity for
-}
-\examples{
-#Extract 20 most similar trends of trend #308, #61 and #85 by hierarchical clustering on trend. Distance matrice and Clustering method are default.
-clust <- clusttrend(doseresponse_report, reference_index = c(308,61,85), sort.method = c("clust","range")), sort.thres = 20,
-mztag ="mzmed", rttag="rtmed". heatmap.on=TRUE, plot.all=TRUE, export=TRUE, filename="trendcluster_20.pdf")
-#Extract 10\% of all trends that are most similar to trend #308, #61, #85 by manhattan distance matrice.
-clust <- clusttrend(doseresponse_report, reference_index = c(308,61,85), sort.method = c("dist","range")), sort.thres = 20,
-mztag ="mzmed", rttag="rtmed". heatmap.on=TRUE, plot.all=TRUE, export=TRUE, filename="trendcluster_20.pdf")
 }
 \author{
 Lingjue Wang (Mike) <wang.lingjue@wustl.edu>

@@ -4,7 +4,8 @@
 \alias{trendfilter}
 \title{Trend filtering for metabolomic dose-response analysis (TOXcms step 2)}
 \usage{
-doseresponse_report <- trendfilter(DoseStat, pval_cutoff=1, pval_thres=1, anova_cutoff=0.05, trend="increase")
+trendfilter(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05,trend =c("increase","decrease","mono","reverse","all"),
+relChange_cutoff = NULL, export = FALSE)
 }
 \arguments{
 \item{DoseStat}{the output list object of calcdosesstat().}
@@ -28,15 +29,6 @@ The function returns doseresponse_report, a list object including same elements 
 \description{
 The trendfilter() filters two pre-defined trends (dose-response models) from data processed by calcdosestat: monotonic ("increase","decrease","mono") trend and reverse trend.
 The function returns the same list object as the input with only filtered trends retain. The resulting object is called doseResponse_report.
-}
-\examples{
-# There are three statistical levels of trend filtering.
-# pvalue cutoff only
-dr_report <- trendfilter(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = NULL, trend = "mono", relChange_cutoff = NULL, export = TRUE)
-# anova cutoff added
-dr_report <- trendfilter(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05, trend = "mono", relChange_cutoff = NULL, export = TRUE)
-# relative change cutoff added (only applied to monotonic trends)
-dr_report <- trendfilter(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05, trend = "mono", relChange_cutoff = 0.05, export = TRUE)
 }
 \author{
 Cong-Hui Yao <conghui.yao@wustl.edu>

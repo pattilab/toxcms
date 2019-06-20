@@ -4,7 +4,8 @@
 \alias{calcdosestat}
 \title{Statistical analysis for metabolomic dose-response analysis (TOXcms step 1)}
 \usage{
-dosestat <- calcdosestat(feature,Dose_Levels=c("_0uM","_10uM","_50uM","200uM),multicomp="none",p.adjust.method="none)
+calcdosestat(Feature, Dose_Levels, multicomp = c("none","ttest","tukey","games-howell"),
+p.adjust.method = c("none","holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr"),...)
 }
 \arguments{
 \item{Feature}{data.table a feature table including basic information (m/z, retention time, etc) and MS raw intensities among all dose levels.}
@@ -13,6 +14,8 @@ dosestat <- calcdosestat(feature,Dose_Levels=c("_0uM","_10uM","_50uM","200uM),mu
 "tukey"/"games-howell" - post-hoc tests followed by ANOVA.}
 
 \item{p.adjust.method}{p-value adjustment for false-positive reduction in multiple testing. See also \link[stats]{p.adjust}}
+
+\item{...}{Further arguments to be passed to calcdosestat.}
 
 \item{Dose_levels}{character Keywords indicating ordered dose levels in feature table. The dose levels should be ordered incrementally.}
 }
@@ -23,12 +26,6 @@ calcdosestat returns a list object consisting all the statistical results descri
 The function calcdosestat() performs statistical analysis on metabolic responses at diffrent dose levels. Basic statistics of each dose level is calculated.
 MS raw intensities of each feature are normalized by range scaling (x-min/max-min). ANOVA and multigroup testing are performed to obtain p-values and relative changes
 among dose levels. The output is called dosestat.
-}
-\examples{
-library(toxcms)
-feature <- data.table(read.csv("RPLC_POS_dose_multianal.csv"))
-DoseStat <- calcDoseStat(feature, Dose_Levels = c("_0uM","_10uM","_50uM","_200uM"),
-            multicomp = "none", p.adjust.method = "none")
 }
 \author{
 Cong-Hui Yao <conghui.yao@wustl.edu>

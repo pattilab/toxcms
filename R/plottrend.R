@@ -1,4 +1,21 @@
-plottrend<- function(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE, mz_tag = "mzmed", rt_tag = "rtmed",file="Reverse Reponse Curve.pdf"){
+#' A supplemental function to visualize all trends (TOXcms step 3)
+#'
+#' @description The plottrend() plots monotonic and reverse trends based on results from trendfiler(): monotonic ("increase","decrease","mono") trend and reverse trend.
+#' The function export a PDF file including all the plots. plottrend() does not have a return .
+#' @usage plottrend(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE, mz_tag = "mzmed", rt_tag = "rtmed",file="metablictrend.pdf")
+#' @param DoseResponse_report list The output list object from trendfilter().
+#' @param Dose_conditions character Labels at the x axis in the metabolic trend plot, indicating the conditions.
+#' @param mz_tag character Name of the m/z column in the feature table.
+#' @param rt_tag character Name of the retention time column in the feature table.
+#' @param y_transform TRUE/FALSE Whether log2 transformation should be applied to scale y axis.
+#' @param file character The filename of the exported PDF.
+#' @return The function is a plotting function and dose not have a return.
+#' @author Cong-Hui Yao <conghui.yao@wustl.edu>
+#' Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
+#' @import magrittr ggplot2 grDevices gridExtra
+#' @export
+
+plottrend<- function(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE, mz_tag = "mzmed", rt_tag = "rtmed",file="metablictrend.pdf"){
   Dose_Replicates <- DoseResponse_report$Dose_Replicates
   if(is.null(Dose_conditions)){
     cat("Dose conditions are not specified. Previous dose names are applied.\n")
@@ -14,7 +31,7 @@ plottrend<- function(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE
   doses <- factor(doses,levels=as.factor(Dose_conditions))
   num_feature <- nrow(DoseResponse_report$Feature)
   Feature <- DoseResponse_report$Feature
-  
+
   mz <- Feature %>% dplyr::select(contains(mz_tag)) # get the m/z  from Feature
   rt <- Feature %>% dplyr::select(contains(rt_tag)) # get the rt from Feature
   mz <- round(mz,4)

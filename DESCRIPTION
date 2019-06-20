@@ -1,13 +1,35 @@
 Package: toxcms
 Type: Package
-Title: Metabolomic dose-response analysis to differentiate drug targets.
-Version: 1.0.0
-Author: Conghui Yao <conghui.yao@wustl.edu> Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
-Maintainer: Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: GPL3.0
+Title: A tool to perform Metabolomic dose-response analysis and discover drug targets
+Version: 1.0.1
+Authors@R: c(
+    person("Cong-Hui", "Yao", email = "conghui.yao@wustl.edu", role = c("aut")),
+    person("Lingjue", "Wang", email = "wang.lingjue@wustl.edu", role = c("cre","aut"))
+    )
+Description: An informatic tool for metabolomics data analysis. TOXcms profiles metabolic trends as a function of a drug doses 
+    from untargeted metabolomics data, models and visualizes dose-dependent metabolic changes. 
+    TOXcms is useful in screening metabolic targets of drugs.
+Depends: 
+    R (>= 3.3.0)
+Imports:
+    utils,
+    magrittr,
+    data.table,
+    dr4pl,
+    userfriendlyscience,
+    stats,
+    gplots,
+    ggplot2,
+    grDevices,
+    gridExtra
+Suggests:
+    xcms,
+    rmarkdown,
+    readr,
+    dplyr
+URL: https://github.com/pattilab/toxcms
+BugReports: https://github.com/pattilab/toxcms/issues
+License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
-
+RoxygenNote: 6.1.1

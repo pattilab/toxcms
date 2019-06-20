@@ -1,38 +1,32 @@
 #' Clustering trend for metabolomic dose-response analysis (TOXcms step 3)
 #'
 #' @description This function applies similarity matrices and hierarchical clustering to group metabolomic trends based on the similarity and dissimilarity in their dose-dependent responses.
-#' @usgae clust <- clusttrend(doseresponse_report, reference_index = c(308,61,27,26), sort.method = c("clust","range"), sort.thres = 40, dist.method = "euclidean", hclust.method = "single", mztag = "mzmed", rttag = "rtmed", heatmap.on = TRUE, plot.all = TRUE, filename = "selected_AC_reference_plot_single.pdf")
+#' @usage (DoseResponse_report, reference_index=NULL, sort.method = c("clust","layer"), sort.thres = 20,
+#' dist.method = "euclidean", hclust.method = "average", mz_tag = "mzmed", rt_tag = "rtmed",
+#' heatmap.on = FALSE, plot.all = FALSE,export=TRUE, filename = "Heatmap.pdf",...)
 #' @param DoseResponse_report This is the output of trendfilter(), the end of toxcms step 2.
 #' @param reference_index This is the indices of the reference trends. clusttrend() apply the algorithm for each of the reference index.
 #' @param sort.method a two-element vector indicating the sorting methods. The first element can be either "dist" or "clust". If the first element is "dist", the second element can be "far","near" or "both".
 #' If the first element is "clust", then the second-element can be “range" or "layer".
 #' @param sort.thres a numeric number, indicating the sorting threshold for each group. Can be a fraction number smaller than 1 or a positibe integer larger than 1.
 #' @param dist.method  Matrice used for similarity calculation. See also \link[stats]{dist}.
-#' @param hclust.method Methods for hierarchical clustering. See also \link[stats]{hlust}/
-#' @param mztag name of the m/z column in the feature table.
-#' @param rttag name of the retention time column in the feature table.
+#' @param hclust.method Methods for hierarchical clustering. See also \link[stats]{hlust}.
+#' @param mz_tag name of the m/z column in the feature table.
+#' @param rt_tag name of the retention time column in the feature table.
 #' @param heatmap.on a TRUE/FALSE value indicating whether heatmap shoudld be generated.
 #' @param plot.all a TRUE/FALSE value indicating whether a heatmap of all trends should be generated.
 #' @param export a TRUE/FALSE value indicating whetehr the trend clusters should be exported to a csv. file.
 #' @param filename a character indicating the name of the exported csv file.
-#' @details clusttrend uses either distance similarity for
+#' @param ... Further arguments to be passed to clusttrend.
 #' @return clusttrend returns a list object, within wich each element is a trend cluster. The name of each element is the reference_index. Heatmap visualization of all trend clusters will be generated if heatmap.on=TRUE.
 #' @author Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
 #' Cong-Hui Yao <conghui.yao@wustl.edu>
-#' @examples
-#' #Extract 20 most similar trends of trend #308, #61 and #85 by hierarchical clustering on trend. Distance matrice and Clustering method are default.
-#' clust <- clusttrend(doseresponse_report, reference_index = c(308,61,85), sort.method = c("clust","range")), sort.thres = 20,
-#' mztag ="mzmed", rttag="rtmed". heatmap.on=TRUE, plot.all=TRUE, export=TRUE, filename="trendcluster_20.pdf")
-#' #Extract 10% of all trends that are most similar to trend #308, #61, #85 by manhattan distance matrice.
-#' clust <- clusttrend(doseresponse_report, reference_index = c(308,61,85), sort.method = c("dist","range")), sort.thres = 20,
-#' mztag ="mzmed", rttag="rtmed". heatmap.on=TRUE, plot.all=TRUE, export=TRUE, filename="trendcluster_20.pdf")
+#' @import ggplot2 magrittr grDevices data.table gridExtra
 #' @importFrom stats hclust dist cutree
-#' @import ggplot2
-#' @import magrittr
 #' @importFrom gplots heatmap.2
 #' @export
 clusttrend <- function(DoseResponse_report, reference_index=NULL, sort.method = c("clust","layer"), sort.thres = 20,
-                         dist.method = "euclidean", hclust.method = "average", mztag = "mzmed", rttag = "rtmed",
+                         dist.method = "euclidean", hclust.method = "average", mz_tag = "mzmed", rt_tag = "rtmed",
                          heatmap.on = FALSE, plot.all = FALSE,export=TRUE, filename = "Heatmap.pdf",...){
 
   # sort.method are c("dist","both"/"far"/"near") c("clust","range"/"layer")
@@ -73,27 +67,27 @@ j=1
 # names are feature index
 names(FeatureClust) <- names(index_to_extract)
 
-# mztag and rttag search
-mz <- DoseResponse_report$Feature %>% dplyr::select(contains(mztag)) # get the m/z from Feature
-rt <- DoseResponse_report$Feature %>% dplyr::select(contains(rttag)) # get the rt from Feature
+# mz_tag and rt_tag search
+mz <- DoseResponse_report$Feature %>% dplyr::select(contains(mz_tag)) # get the m/z from Feature
+rt <- DoseResponse_report$Feature %>% dplyr::select(contains(rt_tag)) # get the rt from Feature
 
   if(length(mz)==1){
     cat("Succefully found",colnames(mz),"in feature table.\n")
   } else if(length(mz)==0) {
     stop("The specified '",mz_tag, "' does not match any columns in feature table.")
   } else if (length(mz)>1){
-    stop("Multiple columns including '",mztag, "'. Please check the column names of feature table." )
+    stop("Multiple columns including '",mz_tag, "'. Please check the column names of feature table." )
   } else{
-    stop("Error occurs when matching ", mztag)
+    stop("Error occurs when matching ", mz_tag)
   }
   if(length(rt)==1){
     cat("Succefully found",colnames(rt),"in feature table.\n")
   } else if(length(rt)==0){
-    stop("The specified '",rttag, "'does not match any columns in feature table.")
+    stop("The specified '",rt_tag, "'does not match any columns in feature table.")
   } else if (length(rt)>1){
-    stop("Multiple columns including '",rttag, "'. Please check the column names of feature table." )
+    stop("Multiple columns including '",rt_tag, "'. Please check the column names of feature table." )
   } else{
-    stop("Error occurs when matching ", rttag)
+    stop("Error occurs when matching ", rt_tag)
   }
 mz <- round(mz,4)
 rt <- round(rt)

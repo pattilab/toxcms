@@ -4,12 +4,14 @@
 \alias{normalization}
 \title{Row-wise data normalization and transformation}
 \usage{
-normalization(data,Norm.method="range")
+normalization(data,Norm.method="range",...)
 }
 \arguments{
 \item{data}{a matrix of numerical values.}
 
 \item{Norm.method}{normalization methods to be applied. By default using range scaling. See details for further information.}
+
+\item{...}{Further arguments to be passed to normalization.}
 }
 \description{
 Perform row-wise data normalization or transformation of a given data.matrix. Return a data.matrix with normalized values.

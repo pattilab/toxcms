@@ -2,7 +2,8 @@
 #'
 #' @description The trendfilter() filters two pre-defined trends (dose-response models) from data processed by calcdosestat: monotonic ("increase","decrease","mono") trend and reverse trend.
 #' The function returns the same list object as the input with only filtered trends retain. The resulting object is called doseResponse_report.
-#' @usage doseresponse_report <- trendfilter(DoseStat, pval_cutoff=1, pval_thres=1, anova_cutoff=0.05, trend="increase")
+#' @usage trendfilter(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05,trend =c("increase","decrease","mono","reverse","all"),
+#' relChange_cutoff = NULL, export = FALSE)
 #' @param DoseStat the output list object of calcdosesstat().
 #' @param pval_cutoff a filtering threshold of significance cutoff of Welch t-test or post-hoc tests.
 #' @param pval_thres a filtering threshold of numbers of significant dose pairs. With n dose levels, maximum value for adjacent comparison (multicomp="none") is n-1, maximum value for multi-group comparison
@@ -14,14 +15,7 @@
 #' @return The function returns doseresponse_report, a list object including same elements as the input that are filtered based on trend and statistical thresholds.
 #' @author Cong-Hui Yao <conghui.yao@wustl.edu>
 #' Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
-#' @examples # There are three statistical levels of trend filtering.
-#' # pvalue cutoff only
-#' dr_report <- trendfilter(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = NULL, trend = "mono", relChange_cutoff = NULL, export = TRUE)
-#' # anova cutoff added
-#' dr_report <- trendfilter(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05, trend = "mono", relChange_cutoff = NULL, export = TRUE)
-#' # relative change cutoff added (only applied to monotonic trends)
-#' dr_report <- trendfilter(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05, trend = "mono", relChange_cutoff = 0.05, export = TRUE)
-#' @import magrittr
+#' @import magrittr utils data.table
 #' @export
 trendfilter = function(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05,trend =c("increase","decrease","mono","reverse","all"),
                        relChange_cutoff = NULL, export = FALSE){
