@@ -91,7 +91,9 @@ rt <- DoseResponse_report$Feature %>% dplyr::select(contains(rt_tag)) # get the 
   }
 mz <- round(mz,4)
 rt <- round(rt)
+dataset <- DoseResponse_report$Normalized_Response[,-1L]
   # plot the heatmap
+
   if(heatmap.on==T){
     pdf(file = filename, width = 8.5, height = 11)
     colLabel <- rep(names(DoseResponse_report$Dose_Replicates),times=DoseResponse_report$Dose_Replicates)

@@ -71,10 +71,10 @@ trendfilter = function(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutof
   DoseResponse_report <- list(Feature = DoseStat$Feature[index,], Normalized_Response = DoseStat$Normalized_Response[index,],
                               stat = DoseStat$stat[index,], pvalue = DoseStat$pvalue[index,], relChange = DoseStat$relChange[index,],
                               trendCalc_result = trendCalc_result[index,], Dose_Levels = DoseStat$Dose_Levels, Dose_Replicates = DoseStat$Dose_Replicates,
-                              SampleInfo = DoseStat$SampleInfo, parameters = parameters)
+                              SampleInfo = DoseStat$SampleInfo, projectName = DoseStat$projectName, parameters = parameters)
 
   if(export){
-    file_name <- paste(Sys.Date(),"pval",pval_cutoff,"pval_pass#",pval_thres,"relChange",relChange_cutoff,"anova_cutoff",anova_cutoff,trend,sep = "_")
+    file_name <- paste(DoseResponse_report$projectName, "pval",pval_cutoff,"trend",trend,"pval_pass#",pval_thres,"relChange",relChange_cutoff,"anova_cutoff",anova_cutoff,Sys.time(),sep = "_")
     write.csv(DoseResponse_report$Feature,paste(file_name,"features.csv",sep="_"))
     write.csv(DoseResponse_report$stat,paste(file_name,"statistic_basic.csv",sep="_"))
     write.csv(cbind(DoseResponse_report$pvalue,DoseResponse_report$relChange, DoseResponse_report$trendCalc_result),paste(file_name,"statistic_comparison.csv",sep="_"))

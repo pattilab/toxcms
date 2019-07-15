@@ -22,9 +22,9 @@ plot = TRUE, file = "doseResponseCurve.pdf",...)
 
 \item{plot}{TRUE/FALSE. When set to TRUE, a PDF file including all plots will be exported.}
 
-\item{file}{character The filename of the exported PDF.}
-
 \item{...}{Further arguments to be passed to fitdrc}
+
+\item{file}{character The filename of the exported PDF.}
 }
 \value{
 The function returns doseresponse_report, a list object including same elements as the input and an addition of ED50 value.

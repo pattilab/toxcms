@@ -19,7 +19,7 @@
 #' @import magrittr dr4pl utils ggplot2 gridExtra grDevices
 #' @export
 
-fitdrc = function(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt_tag = "rtmed", export = TRUE, plot = TRUE, file = "doseResponseCurve.pdf",...){
+fitdrc = function(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt_tag = "rtmed", export = TRUE, plot = TRUE,...){
 
   if(is.na(match(DoseResponse_report$parameters$trend,c("increase","decrease","mono")))){
     cat("fitdrc function works with monotonous trend analysis, namely the `trend` parameter should be 'increase', 'decrease' or 'mono'.\n")
@@ -56,9 +56,9 @@ fitdrc = function(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt
   }
   mz <- round(mz,4)
   rt <- round(rt)
-  new_index <- sort(mz[[1]],index.return =TRUE)$ix
+  new_index <- sort(dr4pl_Fit_result[[2]], index.return = TRUE)$ix
   last <- tail(new_index,1)
-  pdf(file=file, width = 8.5, height = 11)
+  pdf(file=paste(DoseResponse_report$projectName,"fitted_DoseResponseCurve",Sys.time(),".pdf",sep="_"), width = 8.5, height = 11)
   temp_grid <- list()
   j=1
   for (i in new_index){
@@ -68,7 +68,7 @@ fitdrc = function(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt
       next
       }
     plot <- plotDr4pl(dr_object,dose_transform = TRUE, indices.outlier = TRUE)
-    plot <- plot + labs(title=paste("index:", i, " mz:", mz[i], " rt:", rt[i],paste(" ED_",ED,": ",round(dr4pl_Fit_result[[2]][i],4),sep=""))) + theme(plot.title=element_text(size=10, hjust = 0.5, face="bold", color="black", lineheight=1))
+    plot <- plot + labs(title=paste("index:", i, " mz:", mz[i], " rt:", rt[i], paste(" ED_",ED,": ",round(dr4pl_Fit_result[[2]][i], 4), sep=""))) + theme(plot.title=element_text(size=10, hjust = 0.5, face="bold", color="black", lineheight=1))
     temp_grid[[j]] <- plot
     j=j+1
       if(j==7 || i==last){

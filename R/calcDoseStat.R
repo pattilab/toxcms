@@ -10,6 +10,7 @@
 #' @param multicomp options for multigroup testing of significant difference. "none"- Welch t-test on adjacent doses; "ttest" - pairwise Welch t-test among all doses;
 #' "tukey"/"games-howell" - post-hoc tests followed by ANOVA.
 #' @param p.adjust.method p-value adjustment for false-positive reduction in multiple testing. See also \link[stats]{p.adjust}
+#' @param projectName character Project name of the TOXcms analysis
 #' @param ... Further arguments to be passed to calcdosestat.
 #' @return calcdosestat returns a list object consisting all the statistical results described above.
 #' @author Cong-Hui Yao <conghui.yao@wustl.edu>
@@ -20,7 +21,7 @@
 #' @export
 
 calcdosestat = function(Feature, Dose_Levels, multicomp = c("none","ttest","tukey","games-howell"),
-                         p.adjust.method = c("none","holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr"),...){
+                         p.adjust.method = c("none","holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr"),projectName = "dose_response_analysis",...){
 
 # parameter check point ----------------------------------------------------------
 multicomp <- match.arg(multicomp)
@@ -147,9 +148,9 @@ dose_pair <- dose_pair[seq_ind]
 
 relChange <- cbind(relChange,relchange)
 pvalue <- cbind(pvalue,aov_pvalue=aov_pvalue,pairwise_pvalue)
-DoseStat = list(Feature = Feature, Normalized_Response = Normalized_Response, stat = stat,
+DoseStat = list(Feature = Feature, Normalized_Response = data.frame(Normalized_Response), stat = stat,
                   pvalue = pvalue, relChange = relChange, Dose_Levels = Dose_Levels, Dose_Replicates = Dose_Replicates,
-                  SampleInfo = SampleInfo, norm.method="range", multicomp=multicomp, p.adjust.method = p.adjust.method)
+                  SampleInfo = SampleInfo, projectName = projectName, norm.method="range", multicomp=multicomp, p.adjust.method = p.adjust.method)
 
 return(DoseStat)
 }

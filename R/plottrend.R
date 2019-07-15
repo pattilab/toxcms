@@ -15,7 +15,7 @@
 #' @import magrittr ggplot2 grDevices gridExtra
 #' @export
 
-plottrend<- function(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE, mz_tag = "mzmed", rt_tag = "rtmed",file="metablictrend.pdf"){
+plottrend<- function(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE, mz_tag = "mzmed", rt_tag = "rtmed"){
   Dose_Replicates <- DoseResponse_report$Dose_Replicates
   if(is.null(Dose_conditions)){
     cat("Dose conditions are not specified. Previous dose names are applied.\n")
@@ -58,7 +58,7 @@ plottrend<- function(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE
   new_index <- sort(mz[[1]],index.return = TRUE)$ix
   last_index <- tail(new_index,1)
   # creat pdf for printing
-  pdf(file=file, width = 8.5, height = 11)
+  pdf(file=paste(DoseResponse_report$projectName,"trend_lineplot", Sys.time(),".pdf", sep="_"), width = 8.5, height = 11)
   temp_grid <- list()
   j=1
   # looping to plot

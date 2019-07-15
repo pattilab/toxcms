@@ -15,6 +15,8 @@ p.adjust.method = c("none","holm", "hochberg", "hommel", "bonferroni", "BH", "BY
 
 \item{p.adjust.method}{p-value adjustment for false-positive reduction in multiple testing. See also \link[stats]{p.adjust}}
 
+\item{projectName}{character Project name of the TOXcms analysis}
+
 \item{...}{Further arguments to be passed to calcdosestat.}
 
 \item{Dose_levels}{character Keywords indicating ordered dose levels in feature table. The dose levels should be ordered incrementally.}
