@@ -2,9 +2,9 @@
 % Please edit documentation in R/clusttrend.R
 \name{clusttrend}
 \alias{clusttrend}
-\title{Clustering trend for metabolomic dose-response analysis (TOXcms step 3)}
+\title{Clustering trend for metabolomic dose-response analysis (TOXcms step 4)}
 \usage{
-(DoseResponse_report, reference_index=NULL, sort.method = c("clust","layer"), sort.thres = 20,
+clusttrend(DoseResponse_report, reference_index=NULL, sort.method = c("clust","layer"), sort.thres = 20,
 dist.method = "euclidean", hclust.method = "average", mz_tag = "mzmed", rt_tag = "rtmed",
 heatmap.on = FALSE, plot.all = FALSE,export=TRUE, filename = "Heatmap.pdf",...)
 }
@@ -20,7 +20,7 @@ If the first element is "clust", then the second-element can be “range" or "la
 
 \item{dist.method}{Matrice used for similarity calculation. See also \link[stats]{dist}.}
 
-\item{hclust.method}{Methods for hierarchical clustering. See also \link[stats]{hlust}.}
+\item{hclust.method}{Methods for hierarchical clustering. See also \link[stats]{hclust}.}
 
 \item{mz_tag}{name of the m/z column in the feature table.}
 

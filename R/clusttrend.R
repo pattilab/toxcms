@@ -1,7 +1,7 @@
-#' Clustering trend for metabolomic dose-response analysis (TOXcms step 3)
+#' Clustering trend for metabolomic dose-response analysis (TOXcms step 4)
 #'
 #' @description This function applies similarity matrices and hierarchical clustering to group metabolomic trends based on the similarity and dissimilarity in their dose-dependent responses.
-#' @usage (DoseResponse_report, reference_index=NULL, sort.method = c("clust","layer"), sort.thres = 20,
+#' @usage clusttrend(DoseResponse_report, reference_index=NULL, sort.method = c("clust","layer"), sort.thres = 20,
 #' dist.method = "euclidean", hclust.method = "average", mz_tag = "mzmed", rt_tag = "rtmed",
 #' heatmap.on = FALSE, plot.all = FALSE,export=TRUE, filename = "Heatmap.pdf",...)
 #' @param DoseResponse_report This is the output of trendfilter(), the end of toxcms step 2.
@@ -10,7 +10,7 @@
 #' If the first element is "clust", then the second-element can be “range" or "layer".
 #' @param sort.thres a numeric number, indicating the sorting threshold for each group. Can be a fraction number smaller than 1 or a positibe integer larger than 1.
 #' @param dist.method  Matrice used for similarity calculation. See also \link[stats]{dist}.
-#' @param hclust.method Methods for hierarchical clustering. See also \link[stats]{hlust}.
+#' @param hclust.method Methods for hierarchical clustering. See also \link[stats]{hclust}.
 #' @param mz_tag name of the m/z column in the feature table.
 #' @param rt_tag name of the retention time column in the feature table.
 #' @param heatmap.on a TRUE/FALSE value indicating whether heatmap shoudld be generated.
@@ -21,8 +21,7 @@
 #' @return clusttrend returns a list object, within wich each element is a trend cluster. The name of each element is the reference_index. Heatmap visualization of all trend clusters will be generated if heatmap.on=TRUE.
 #' @author Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
 #' Cong-Hui Yao <conghui.yao@wustl.edu>
-#' @import ggplot2 magrittr grDevices data.table gridExtra dplyr
-#' @importFrom stats hclust dist cutree
+#' @import ggplot2 magrittr grDevices data.table gridExtra dplyr stats
 #' @importFrom gplots heatmap.2
 #' @export
 clusttrend <- function(DoseResponse_report, reference_index=NULL, sort.method = c("clust","layer"), sort.thres = 20,
@@ -89,8 +88,17 @@ rt <- DoseResponse_report$Feature %>% dplyr::select(contains(rt_tag)) # get the 
   } else{
     stop("Error occurs when matching ", rt_tag)
   }
-mz <- round(mz,4)
-rt <- round(rt)
+if(sapply(mz,is.numeric)) {
+  mz <- round(mz,4)
+} else {
+  mz %>% mutate_if(is.factor, as.character) %>% mz
+}
+if(sapply(rt,is.numeric)) {
+  rt <- round(rt,4)
+} else {
+  rt <- rt %>% mutate_if(is.factor, as.character) %>% data.table
+}
+
 dataset <- DoseResponse_report$Normalized_Response[,-1L]
   # plot the heatmap
 
@@ -108,7 +116,7 @@ dataset <- DoseResponse_report$Normalized_Response[,-1L]
     rt_plot <- as.numeric(unlist(rt[ind,]))
     labrow <- paste0(ind, "_", sprintf("%.4f", mz_plot),"_",rt_plot)
     gplots::heatmap.2(as.matrix(dataset[ind,]), Colv = FALSE, margins = c(10,10), distfun = function(x) stats::dist(x,method=dist.method), hclustfun = function(x) stats::hclust(x,method=hclust.method),
-              main = paste("Feature #",i," mz=", mz[i], " rt=", rt[i], sep = ""), dendrogram = 'row',
+              main = paste0("Feature #",i," ",mz_tag,"=", mz[i], " ",rt_tag, "=", rt[i], sep = ""), dendrogram = 'row',
               labCol = colLabel, labRow = labrow, trace="none",key=TRUE, keysize=1.2, key.title = "Scale")
     }
   cat("Heatmap is generated under: \n",getwd())

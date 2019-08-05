@@ -1,7 +1,7 @@
 Package: toxcms
 Type: Package
 Title: A tool to perform Metabolomic dose-response analysis and discover drug targets
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: c(
     person("Cong-Hui", "Yao", email = "conghui.yao@wustl.edu", role = c("aut")),
     person("Lingjue", "Wang", email = "wang.lingjue@wustl.edu", role = c("cre","aut"))

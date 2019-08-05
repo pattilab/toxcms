@@ -2,13 +2,12 @@
 #'
 #' @description The plottrend() plots monotonic and reverse trends based on results from trendfiler(): monotonic ("increase","decrease","mono") trend and reverse trend.
 #' The function export a PDF file including all the plots. plottrend() does not have a return .
-#' @usage plottrend(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE, mz_tag = "mzmed", rt_tag = "rtmed",file="metablictrend.pdf")
+#' @usage plottrend(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE, mz_tag = "mzmed", rt_tag = "rtmed")
 #' @param DoseResponse_report list The output list object from trendfilter().
 #' @param Dose_conditions character Labels at the x axis in the metabolic trend plot, indicating the conditions.
 #' @param mz_tag character Name of the m/z column in the feature table.
 #' @param rt_tag character Name of the retention time column in the feature table.
 #' @param y_transform TRUE/FALSE Whether log2 transformation should be applied to scale y axis.
-#' @param file character The filename of the exported PDF.
 #' @return The function is a plotting function and dose not have a return.
 #' @author Cong-Hui Yao <conghui.yao@wustl.edu>
 #' Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
@@ -34,8 +33,17 @@ plottrend<- function(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE
 
   mz <- Feature %>% dplyr::select(contains(mz_tag)) # get the m/z  from Feature
   rt <- Feature %>% dplyr::select(contains(rt_tag)) # get the rt from Feature
-  mz <- round(mz,4)
-  rt <- round(rt)
+  if(sapply(mz,is.numeric)) {
+    mz <- round(mz,4)
+  } else {
+    mz %>% mutate_if(is.factor, as.character) %>% mz
+  }
+  if(sapply(rt,is.numeric)) {
+    rt <- round(rt,4)
+  } else {
+    rt <- rt %>% mutate_if(is.factor, as.character) %>% data.table
+  }
+
   # checking mz_tag and rt_tag
   if(length(mz)==1){
     cat("Succefully found",colnames(mz)," in feature table.\n")
@@ -58,7 +66,7 @@ plottrend<- function(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE
   new_index <- sort(mz[[1]],index.return = TRUE)$ix
   last_index <- tail(new_index,1)
   # creat pdf for printing
-  pdf(file=paste(DoseResponse_report$projectName,"trend_lineplot", Sys.time(),".pdf", sep="_"), width = 8.5, height = 11)
+  pdf(file=paste(DoseResponse_report$projectName,"trend_lineplot", ".pdf", sep="_"), width = 8.5, height = 11)
   temp_grid <- list()
   j=1
   # looping to plot
@@ -80,7 +88,7 @@ plottrend<- function(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE
     a <- a + ggplot2::theme(axis.text.x = ggplot2::element_text(size = 10))
     a <- a + ggplot2::theme(axis.text.y = ggplot2::element_text(size = 10))
     # add labeles
-    a <- a + ggplot2::labs(title=paste("index:", i, "  mz:", mz[i], "  rt:", rt[i]),x="Dose",y="Normalized Response") + ggplot2::theme(plot.title=element_text(size=10, hjust = 0.5, face="bold", color="black", lineheight=1))
+    a <- a + ggplot2::labs(title=paste0("index:", i, " ", mz_tag,":", mz[i,], " ", rt_tag,":", rt[i]),x="Dose",y="Normalized Response") + ggplot2::theme(plot.title=element_text(size=10, hjust = 0.5, face="bold", color="black", lineheight=1))
     # print plot
     temp_grid[[j]] <- a
     j=j+1

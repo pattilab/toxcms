@@ -1,9 +1,9 @@
-#'  Monotonic trend fitting for metabolomic dose-reponse analysis (TOXcms step 3)
+#'  Monotonic trend fitting and ED50 estimation for metabolomic dose-reponse analysis (TOXcms step 3)
 #'
-#' @description The fitdrc() fits the monotonic metabolic trends to a 4-parameter logistic model and visualize the fitting curve. Based on the fitted model, the function calculates the ED50 value for metabolic trend. The function returns the same list object as the input with additional table of ED50 values.
-#' The function also exports a PDF file including all plots. The output object is called doseResponse_report.
-#' @usage fitdrc(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt_tag = "rtmed", export = TRUE,
-#' plot = TRUE, file = "doseResponseCurve.pdf",...)
+#' @description The fitdrc() fits the monotonic metabolic trends to a 4-parameter logistic model and visualize the fitting curve. Based on the fitted model,
+#'     the function calculates the ED50 value for metabolic trend. The function returns the same list object as the input with additional table of ED50 values.
+#'     The function also exports a PDF file including all plots. The output object is called doseResponse_report.
+#' @usage fitdrc(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt_tag = "rtmed", export = TRUE, plot = TRUE,...)
 #' @param DoseResponse_report list The output list object from trendfilter().
 #' @param Dose_values numeric A vector of dose values.
 #' @param ED numeric A value between (0,1), indicating the effective dose.
@@ -11,11 +11,10 @@
 #' @param rt_tag character Name of the retention time column in the feature table.
 #' @param export TRUE/FALSE. When set to TRUE, a csv file including all results will be exported.
 #' @param plot TRUE/FALSE. When set to TRUE, a PDF file including all plots will be exported.
-#' @param file character The filename of the exported PDF.
 #' @param ... Further arguments to be passed to fitdrc
 #' @return The function returns doseresponse_report, a list object including same elements as the input and an addition of ED50 value.
 #' @author Cong-Hui Yao <conghui.yao@wustl.edu>
-#' Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
+#'     Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
 #' @import magrittr dr4pl utils ggplot2 gridExtra grDevices
 #' @export
 
@@ -54,11 +53,19 @@ fitdrc = function(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt
   } else{
     stop("Error occurs when matching ", rt_tag)
   }
-  mz <- round(mz,4)
-  rt <- round(rt)
+  if(sapply(mz,is.numeric)) {
+    mz <- round(mz,4)
+  } else {
+    mz %>% mutate_if(is.factor, as.character) %>% mz
+  }
+  if(sapply(rt,is.numeric)) {
+    rt <- round(rt,4)
+  } else {
+    rt <- rt %>% mutate_if(is.factor, as.character) %>% data.table
+  }
   new_index <- sort(dr4pl_Fit_result[[2]], index.return = TRUE)$ix
   last <- tail(new_index,1)
-  pdf(file=paste(DoseResponse_report$projectName,"fitted_DoseResponseCurve",Sys.time(),".pdf",sep="_"), width = 8.5, height = 11)
+  pdf(file=paste(DoseResponse_report$projectName,"fitted_DoseResponseCurve", paste0("ED",round(ED*100)),".pdf",sep="_"), width = 8.5, height = 11)
   temp_grid <- list()
   j=1
   for (i in new_index){
@@ -68,7 +75,7 @@ fitdrc = function(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt
       next
       }
     plot <- plotDr4pl(dr_object,dose_transform = TRUE, indices.outlier = TRUE)
-    plot <- plot + labs(title=paste("index:", i, " mz:", mz[i], " rt:", rt[i], paste(" ED_",ED,": ",round(dr4pl_Fit_result[[2]][i], 4), sep=""))) + theme(plot.title=element_text(size=10, hjust = 0.5, face="bold", color="black", lineheight=1))
+    plot <- plot + labs(title=paste0("index:", i, " ", mz_tag,":", mz[i], " ", rt_tag,":", rt[i,], paste0(" ED",round(ED*100),": ",round(dr4pl_Fit_result[[2]][i], 4), sep=""))) + theme(plot.title=element_text(size=10, hjust = 0.5, face="bold", color="black", lineheight=1))
     temp_grid[[j]] <- plot
     j=j+1
       if(j==7 || i==last){

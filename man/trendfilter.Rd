@@ -4,20 +4,20 @@
 \alias{trendfilter}
 \title{Trend filtering for metabolomic dose-response analysis (TOXcms step 2)}
 \usage{
-trendfilter(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05,trend =c("increase","decrease","mono","reverse","all"),
-relChange_cutoff = NULL, export = FALSE)
+trendfilter(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05,trend = c("increase","decrease","mono","reverse","all"),
+    relChange_cutoff = NULL, export = FALSE)
 }
 \arguments{
-\item{DoseStat}{the output list object of calcdosesstat().}
+\item{DoseStat}{list The output of calcdosesstat().}
 
-\item{pval_cutoff}{a filtering threshold of significance cutoff of Welch t-test or post-hoc tests.}
+\item{pval_cutoff}{numeric The significance threshold of Welch t-test or post-hoc tests.}
 
-\item{pval_thres}{a filtering threshold of numbers of significant dose pairs. With n dose levels, maximum value for adjacent comparison (multicomp="none") is n-1, maximum value for multi-group comparison
-(multicomp="ttest"/"tukey"/"games-howell") is n(n-1)/2.}
+\item{pval_thres}{numeric The minimum number of significant changes among dose pairs. For n dose levels, maximum threshold is n-1 for
+adjacent comparison (multicomp="none"), and n(n-1)/2 for multi-group comparison (multicomp="ttest"/"tukey"/"games-howell").}
 
-\item{anova_cutoff}{a filtering threshold of significancce cutoff of ANOVA.}
+\item{anova_cutoff}{numeric The significance threshold of significancce cutoff of ANOVA.}
 
-\item{trend}{Type of trend. Options are "increase", "decrease", "mono" (both increase/decrease), "reverse" (one inflection point, "V" or "∧" shape), "all" (no filter).}
+\item{trend}{character Type of trend. Options are "increase", "decrease", "mono" (both increase/decrease), "reverse" (one inflection point, "V" or "∧" shape), "all" (no filter).}
 
 \item{relChange_cutoff}{a filtering threshold for monotonic trend ("increase"/"decrease"/"mono"). This filter removes the trends with non-significant relative change larger than the threshold and opposed to desired trends.}
 
@@ -28,9 +28,9 @@ The function returns doseresponse_report, a list object including same elements 
 }
 \description{
 The trendfilter() filters two pre-defined trends (dose-response models) from data processed by calcdosestat: monotonic ("increase","decrease","mono") trend and reverse trend.
-The function returns the same list object as the input with only filtered trends retain. The resulting object is called doseResponse_report.
+    The function returns the same list object as the input with only filtered trends retain. The resulting object is called doseResponse_report.
 }
 \author{
 Cong-Hui Yao <conghui.yao@wustl.edu>
-Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
+    Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
 }

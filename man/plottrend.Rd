@@ -4,7 +4,7 @@
 \alias{plottrend}
 \title{A supplemental function to visualize all trends (TOXcms step 3)}
 \usage{
-plottrend(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE, mz_tag = "mzmed", rt_tag = "rtmed",file="metablictrend.pdf")
+plottrend(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE, mz_tag = "mzmed", rt_tag = "rtmed")
 }
 \arguments{
 \item{DoseResponse_report}{list The output list object from trendfilter().}
@@ -16,8 +16,6 @@ plottrend(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE, mz_tag = 
 \item{mz_tag}{character Name of the m/z column in the feature table.}
 
 \item{rt_tag}{character Name of the retention time column in the feature table.}
-
-\item{file}{character The filename of the exported PDF.}
 }
 \value{
 The function is a plotting function and dose not have a return.

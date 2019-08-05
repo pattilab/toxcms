@@ -5,10 +5,12 @@
 \title{Statistical analysis for metabolomic dose-response analysis (TOXcms step 1)}
 \usage{
 calcdosestat(Feature, Dose_Levels, multicomp = c("none","ttest","tukey","games-howell"),
-p.adjust.method = c("none","holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr"),...)
+p.adjust.method = c("none","holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr"),projectName = "dose_response_analysis",...)
 }
 \arguments{
 \item{Feature}{data.table a feature table including basic information (m/z, retention time, etc) and MS raw intensities among all dose levels.}
+
+\item{Dose_Levels}{character Keywords indicating ordered dose levels in feature table. The dose levels should be ordered incrementally.}
 
 \item{multicomp}{options for multigroup testing of significant difference. "none"- Welch t-test on adjacent doses; "ttest" - pairwise Welch t-test among all doses;
 "tukey"/"games-howell" - post-hoc tests followed by ANOVA.}
@@ -18,8 +20,6 @@ p.adjust.method = c("none","holm", "hochberg", "hommel", "bonferroni", "BH", "BY
 \item{projectName}{character Project name of the TOXcms analysis}
 
 \item{...}{Further arguments to be passed to calcdosestat.}
-
-\item{Dose_levels}{character Keywords indicating ordered dose levels in feature table. The dose levels should be ordered incrementally.}
 }
 \value{
 calcdosestat returns a list object consisting all the statistical results described above.
