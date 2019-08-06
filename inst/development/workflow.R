@@ -8,7 +8,7 @@ library(toxcms)
 library(data.table)
 
 # upload example dataset from toxcms
-feature <- data.table(read.csv(system.file("extdata", "etomoxir_dataset.csv", package="toxcms")))
+feature <- data.table(read.csv(system.file("extdata", "dataset.csv", package="toxcms")))
 
 # Step 1 statistical analysis
 etom_dosestat <- calcdosestat(Feature = feature, Dose_Levels = c("_0uM","_10uM","_50uM","_200uM"), multicomp = "none",
