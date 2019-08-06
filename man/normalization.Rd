@@ -4,7 +4,8 @@
 \alias{normalization}
 \title{Row-wise data normalization and transformation}
 \usage{
-normalization(data,Norm.method=c("range","auto","pareto","vast","level","log10","log2","sqrt"),...)
+normalization(data,Norm.method=c("range","auto","pareto","vast","level",
+"log10","log2","sqrt"),...)
 }
 \arguments{
 \item{data}{a matrix of numerical values.}

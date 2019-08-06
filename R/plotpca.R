@@ -26,6 +26,8 @@ plotpca = function(DoseResponse_report, DoseStat, EDrange = c(0,200),...){
     ED50s <- DoseResponse_report$EDvalue
   } else { stop("ED50 values is not found.") }
 
+  cat("Plotting PCA and mapping ED50...")
+
   #create hash of feature inded and ED50 values
   mapping = data.frame(key=ED50s[,1],value = ED50s[,2], stringsAsFactors = FALSE)
   hTable <- hashmap(mapping$key,mapping$value)
@@ -69,5 +71,7 @@ plotpca = function(DoseResponse_report, DoseStat, EDrange = c(0,200),...){
           #panel.background = element_blank(), axis.line = element_line(colour = "black"))
   p
   filename = paste(paste(DoseResponse_report$projectName,"pca_ed50",sep="_"),".pdf",sep="")
-  ggsave(filename = filename, width=4, height=4, plot = p, dpi = 300)
+  ggsave(filename = filename, width=8, height=8, plot = p, dpi = 300)
+  cat("PCA plot is generated under: \n",getwd())
+
 }

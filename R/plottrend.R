@@ -2,7 +2,8 @@
 #'
 #' @description The plottrend() plots monotonic and reverse trends based on results from trendfiler(): monotonic ("increase","decrease","mono") trend and reverse trend.
 #' The function export a PDF file including all the plots. plottrend() does not have a return .
-#' @usage plottrend(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE, mz_tag = "mzmed", rt_tag = "rtmed")
+#' @usage plottrend(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE,
+#' mz_tag = "mzmed", rt_tag = "rtmed")
 #' @param DoseResponse_report list The output list object from trendfilter().
 #' @param Dose_conditions character Labels at the x axis in the metabolic trend plot, indicating the conditions.
 #' @param mz_tag character Name of the m/z column in the feature table.
@@ -66,7 +67,9 @@ plottrend<- function(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE
   new_index <- sort(mz[[1]],index.return = TRUE)$ix
   last_index <- tail(new_index,1)
   # creat pdf for printing
-  pdf(file=paste(DoseResponse_report$projectName,"trend_lineplot", ".pdf", sep="_"), width = 8.5, height = 11)
+  param <- DoseResponse_report$parameters
+  file_name <- paste(DoseResponse_report$projectName, "trend", param$trend, "pval",param$pval_cutoff,"pval_pass#",param$pval_thres,"relChange",param$relChange_cutoff,"anova_cutoff",param$anova_cutoff,sep = "_")
+  pdf(file=file_name, width = 8.5, height = 11)
   temp_grid <- list()
   j=1
   # looping to plot

@@ -4,7 +4,8 @@
 \alias{plottrend}
 \title{A supplemental function to visualize all trends (TOXcms step 3)}
 \usage{
-plottrend(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE, mz_tag = "mzmed", rt_tag = "rtmed")
+plottrend(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE,
+mz_tag = "mzmed", rt_tag = "rtmed")
 }
 \arguments{
 \item{DoseResponse_report}{list The output list object from trendfilter().}

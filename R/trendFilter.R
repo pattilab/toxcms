@@ -2,8 +2,9 @@
 #'
 #' @description The trendfilter() filters two pre-defined trends (dose-response models) from data processed by calcdosestat: monotonic ("increase","decrease","mono") trend and reverse trend.
 #'     The function returns the same list object as the input with only filtered trends retain. The resulting object is called doseResponse_report.
-#' @usage trendfilter(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05,trend = c("increase","decrease","mono","reverse","all"),
-#'     relChange_cutoff = NULL, export = FALSE)
+#' @usage trendfilter(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05,
+#' trend = c("increase","decrease","mono","reverse","all"),
+#' relChange_cutoff = NULL, export = FALSE)
 #' @param DoseStat list The output of calcdosesstat().
 #' @param pval_cutoff numeric The significance threshold of Welch t-test or post-hoc tests.
 #' @param pval_thres numeric The minimum number of significant changes among dose pairs. For n dose levels, maximum threshold is n-1 for
@@ -70,7 +71,7 @@ DoseResponse_report <- list(Feature = DoseStat$Feature[index,], Normalized_Respo
                             trendCalc_result = trendCalc_result[index,], Dose_Levels = DoseStat$Dose_Levels, Dose_Replicates = DoseStat$Dose_Replicates,
                             SampleInfo = DoseStat$SampleInfo, projectName = DoseStat$projectName, parameters = parameters)
 if(export){
-  file_name <- paste(DoseResponse_report$projectName, "pval",pval_cutoff,"trend",trend,"pval_pass#",pval_thres,"relChange",relChange_cutoff,"anova_cutoff",anova_cutoff,sep = "_")
+  file_name <- paste(DoseResponse_report$projectName, "trend", trend, "pval",pval_cutoff,"pval_pass#",pval_thres,"relChange",relChange_cutoff,"anova_cutoff",anova_cutoff,sep = "_")
   write.csv(DoseResponse_report$Feature,paste(file_name,"features.csv",sep="_"))
   write.csv(DoseResponse_report$stat,paste(file_name,"statistic_basic.csv",sep="_"))
   write.csv(cbind(DoseResponse_report$pvalue,DoseResponse_report$relChange, DoseResponse_report$trendCalc_result),paste(file_name,"statistic_comparison.csv",sep="_"))

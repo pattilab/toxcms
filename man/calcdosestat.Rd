@@ -5,7 +5,8 @@
 \title{Statistical analysis for metabolomic dose-response analysis (TOXcms step 1)}
 \usage{
 calcdosestat(Feature, Dose_Levels, multicomp = c("none","ttest","tukey","games-howell"),
-p.adjust.method = c("none","holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr"),projectName = "dose_response_analysis",...)
+p.adjust.method = c("none","holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr"),
+projectName = "dose_response_analysis",...)
 }
 \arguments{
 \item{Feature}{data.table a feature table including basic information (m/z, retention time, etc) and MS raw intensities among all dose levels.}

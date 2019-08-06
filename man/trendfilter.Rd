@@ -4,8 +4,9 @@
 \alias{trendfilter}
 \title{Trend filtering for metabolomic dose-response analysis (TOXcms step 2)}
 \usage{
-trendfilter(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05,trend = c("increase","decrease","mono","reverse","all"),
-    relChange_cutoff = NULL, export = FALSE)
+trendfilter(DoseStat, pval_cutoff = 0.05, pval_thres = 1, anova_cutoff = 0.05,
+trend = c("increase","decrease","mono","reverse","all"),
+relChange_cutoff = NULL, export = FALSE)
 }
 \arguments{
 \item{DoseStat}{list The output of calcdosesstat().}

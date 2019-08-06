@@ -3,7 +3,8 @@
 #' @description The fitdrc() fits the monotonic metabolic trends to a 4-parameter logistic model and visualize the fitting curve. Based on the fitted model,
 #'     the function calculates the ED50 value for metabolic trend. The function returns the same list object as the input with additional table of ED50 values.
 #'     The function also exports a PDF file including all plots. The output object is called doseResponse_report.
-#' @usage fitdrc(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt_tag = "rtmed", export = TRUE, plot = TRUE,...)
+#' @usage fitdrc(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt_tag = "rtmed",
+#' export = TRUE, plot = TRUE,...)
 #' @param DoseResponse_report list The output list object from trendfilter().
 #' @param Dose_values numeric A vector of dose values.
 #' @param ED numeric A value between (0,1), indicating the effective dose.
@@ -65,7 +66,7 @@ fitdrc = function(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt
   }
   new_index <- sort(dr4pl_Fit_result[[2]], index.return = TRUE)$ix
   last <- tail(new_index,1)
-  pdf(file=paste(DoseResponse_report$projectName,"fitted_DoseResponseCurve", paste0("ED",round(ED*100)),".pdf",sep="_"), width = 8.5, height = 11)
+  pdf(file=paste(paste(DoseResponse_report$projectName,"fitted_DoseResponseCurve", paste0("ED",round(ED*100)),sep="_"),".pdf",sep=""), width = 8.5, height = 11)
   temp_grid <- list()
   j=1
   for (i in new_index){

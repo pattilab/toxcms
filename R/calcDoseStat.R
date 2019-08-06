@@ -4,7 +4,8 @@
 #' MS raw intensities of each feature are normalized by range scaling (x-min/max-min). ANOVA and multigroup testing are performed to obtain p-values and relative changes
 #' among dose levels. The output is called dosestat.
 #' @usage calcdosestat(Feature, Dose_Levels, multicomp = c("none","ttest","tukey","games-howell"),
-#' p.adjust.method = c("none","holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr"),projectName = "dose_response_analysis",...)
+#' p.adjust.method = c("none","holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr"),
+#' projectName = "dose_response_analysis",...)
 #' @param Feature data.table a feature table including basic information (m/z, retention time, etc) and MS raw intensities among all dose levels.
 #' @param Dose_Levels character Keywords indicating ordered dose levels in feature table. The dose levels should be ordered incrementally.
 #' @param multicomp options for multigroup testing of significant difference. "none"- Welch t-test on adjacent doses; "ttest" - pairwise Welch t-test among all doses;
@@ -83,6 +84,7 @@ colnames(cv) <- sapply(Dose_Levels, function(x) paste("cv",x, sep = ""))
 SampleInfo = cbind(SampleNames, dose_levels = rep(Dose_Levels, times = Dose_Replicates))
 stat <- cbind(stat, mean, std, cv) # FUNCTION OUTPUT
 
+cat("Running statistical analysis on ", nrow(Feature), " features...")
 # Data normalization -------------------------------------------------
 Normalized_Response <- normalization(Response[,-1L], Norm.method = "range") # "range' scaling by default
 Normalized_Response <- cbind(index=Response$index, Normalized_Response)
@@ -123,6 +125,7 @@ current <- norm[,start_1:end_1]
   relchange <- cbind(relchange,rowMeans(higher)-rowMeans(current))
   }
 }
+
 colnames(relchange) <- sapply(dose_pair,function(x) paste("rel_",x,sep=""))
 # pick adjacent pairs
 if(multicomp=="none"){
@@ -143,13 +146,15 @@ pvalue <- cbind(pvalue,aov_pvalue=aov_pvalue,pairwise_pvalue)
 DoseStat = list(Feature = Feature, Normalized_Response = data.frame(Normalized_Response), stat = stat,
                 pvalue = pvalue, relChange = relChange, Dose_Levels = Dose_Levels, Dose_Replicates = Dose_Replicates,
                 SampleInfo = SampleInfo, projectName = projectName, norm.method="range", multicomp=multicomp, p.adjust.method = p.adjust.method)
+cat("done.\n")
 return(DoseStat)
 }
 
 #' Row-wise data normalization and transformation
 #'
 #' @description Perform row-wise data normalization or transformation of a given data.matrix. Return a data.matrix with normalized values.
-#' @usage normalization(data,Norm.method=c("range","auto","pareto","vast","level","log10","log2","sqrt"),...)
+#' @usage normalization(data,Norm.method=c("range","auto","pareto","vast","level",
+#' "log10","log2","sqrt"),...)
 #' @param data a matrix of numerical values.
 #' @param Norm.method normalization methods to be applied. By default using range scaling. See details for further information.
 #' @param ... Further arguments to be passed to normalization.

@@ -4,9 +4,10 @@
 \alias{clusttrend}
 \title{Clustering trend for metabolomic dose-response analysis (TOXcms step 4)}
 \usage{
-clusttrend(DoseResponse_report, reference_index=NULL, sort.method = c("clust","layer"), sort.thres = 20,
-dist.method = "euclidean", hclust.method = "average", mz_tag = "mzmed", rt_tag = "rtmed",
-heatmap.on = FALSE, plot.all = FALSE,export=TRUE, filename = "Heatmap.pdf",...)
+clusttrend(DoseResponse_report, reference_index=NULL, sort.method = c("clust","layer"),
+sort.thres = 20, dist.method = "euclidean", hclust.method = "average",
+mz_tag = "mzmed", rt_tag = "rtmed", heatmap.on = FALSE, plot.all = FALSE,
+export=TRUE, filename = "Heatmap.pdf",...)
 }
 \arguments{
 \item{DoseResponse_report}{This is the output of trendfilter(), the end of toxcms step 2.}

@@ -42,7 +42,8 @@ dr4pl_Fit <- function(DoseResponse_report, ED=0.5, Dose_values, export = TRUE){
   names(dr4pl_fit_result)[2]<-paste("ED",ED,sep="_") # rename ED_values to indicate ED used
   # combine ED values with original data
   if(export){
-    file_name <- paste(DoseResponse_report$projectName, "trend",DoseResponse_report$parameters$trend,"pval",DoseResponse_report$parameters$pval_cutoff,"pvalthres#",DoseResponse_report$parameters$pval_thres,"relChange",DoseResponse_report$parameters$relChange_cutoff,"anova_cutoff",DoseResponse_report$parameters$anova_cutoff,sep = "_")
+    param <- DoseResponse_report$parameters
+    file_name <- paste(DoseResponse_report$projectName, "trend", param$trend, "pval",param$pval_cutoff,"pval_pass#",param$pval_thres,"relChange",param$relChange_cutoff, "anova_cutoff",param$anova_cutoff, paste0("ED",round(ED*100)), sep = "_")
     a <- cbind(DoseResponse_report$Feature,ED=dr4pl_fit_result[[2]])
     write.csv(x = a,file = paste(file_name,"features","with ED",ED,".csv",sep="_"))
     cat("\n Fitting result is exported under:\n",getwd())

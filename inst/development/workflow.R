@@ -1,11 +1,14 @@
 # install.packages
-install.pacakges("./toxcms.1.0.3.tar.gz", type="source")
+file_path <- "/Users/Lingjue/Documents/Research/PattiLab/Bioinformatics/Rcode/toxcms_1.0.3.tar.gz" #Mac OS
+file_path <- "X:/Lingjue/toxcms_1.0.3.tar.gz" #Windows
+install.packages(pkgs = file_path, repos = NULL, type="source")
 
+# load packages
 library(toxcms)
 library(data.table)
 
 # upload example dataset from toxcms
-feature <- data.table(system.file("extdata", "etomoxir_dataset.csv", package="toxcms"))
+feature <- data.table(read.csv(system.file("extdata", "etomoxir_dataset.csv", package="toxcms")))
 
 # Step 1 statistical analysis
 etom_dosestat <- calcdosestat(Feature = feature, Dose_Levels = c("_0uM","_10uM","_50uM","_200uM"), multicomp = "none",
@@ -19,7 +22,7 @@ etom_drreport_fit = fitdrc(DoseResponse_report=etom_drreport_mono, Dose_values=c
                            mz_tag = "mzmed", rt_tag = "rtmed", plot=TRUE)
 
 # Step 4.1 clustering
-etom_drreport_clust = clusttrend(etom_drreport, reference_index = NULL, sort.method =c("clust","range"), sort.thres = 20, dist.method = "euclidean", hclust.method = "average",
+etom_drreport_clust = clusttrend(etom_drreport_mono, reference_index = NULL, sort.method =c("clust","layer"), sort.thres = 20, dist.method = "euclidean", hclust.method = "average",
                      mztag = "mzmed", rttag = "rtmed", heatmap.on = TRUE, plot.all = TRUE, filename = "testdataset_hclust_20clusters.pdf")
 
 # Step 5.1 PCA of all features with color-coded ED50 values
@@ -31,7 +34,4 @@ etom_drreport_reverse <- trendfilter(etom_dosestat, pval_cutoff = 0.05, pval_thr
 
 # Step 3.2 inflection trend plotting
 plottrend(etom_drreport_reverse, Dose_conditions = c("0uM","10uM","50uM","200uM"), y_transform = T,
-          mz_tag = "mzmed", rt_tag = "rtmed", file = )
-
-
-
+          mz_tag = "mzmed", rt_tag = "rtmed")

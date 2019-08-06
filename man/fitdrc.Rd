@@ -4,7 +4,8 @@
 \alias{fitdrc}
 \title{Monotonic trend fitting and ED50 estimation for metabolomic dose-reponse analysis (TOXcms step 3)}
 \usage{
-fitdrc(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt_tag = "rtmed", export = TRUE, plot = TRUE,...)
+fitdrc(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt_tag = "rtmed",
+export = TRUE, plot = TRUE,...)
 }
 \arguments{
 \item{DoseResponse_report}{list The output list object from trendfilter().}

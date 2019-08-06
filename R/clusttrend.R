@@ -1,9 +1,10 @@
 #' Clustering trend for metabolomic dose-response analysis (TOXcms step 4)
 #'
 #' @description This function applies similarity matrices and hierarchical clustering to group metabolomic trends based on the similarity and dissimilarity in their dose-dependent responses.
-#' @usage clusttrend(DoseResponse_report, reference_index=NULL, sort.method = c("clust","layer"), sort.thres = 20,
-#' dist.method = "euclidean", hclust.method = "average", mz_tag = "mzmed", rt_tag = "rtmed",
-#' heatmap.on = FALSE, plot.all = FALSE,export=TRUE, filename = "Heatmap.pdf",...)
+#' @usage clusttrend(DoseResponse_report, reference_index=NULL, sort.method = c("clust","layer"),
+#' sort.thres = 20, dist.method = "euclidean", hclust.method = "average",
+#' mz_tag = "mzmed", rt_tag = "rtmed", heatmap.on = FALSE, plot.all = FALSE,
+#' export=TRUE, filename = "Heatmap.pdf",...)
 #' @param DoseResponse_report This is the output of trendfilter(), the end of toxcms step 2.
 #' @param reference_index This is the indices of the reference trends. clusttrend() apply the algorithm for each of the reference index.
 #' @param sort.method a two-element vector indicating the sorting methods. The first element can be either "dist" or "clust". If the first element is "dist", the second element can be "far","near" or "both".
@@ -47,7 +48,7 @@ clusttrend <- function(DoseResponse_report, reference_index=NULL, sort.method = 
   } else {
   cat("'reference index' is NULL. Sort all trends by hierarchical clustering...\n ")
     if(!(sort.method[1]=="clust"&&sort.method[2]=="layer")) {
-    warning("When sorting all trends,'sort.method' are enforced to be 'clust-layer'. ")
+    warning("\nWhen sorting all trends,'sort.method' are enforced to be 'clust-layer'. ")
     sort.method = c("clust","layer")
     }
   index_to_extract <- sortByClust(DoseResponse_report, Index = reference_index, Sort.method = sort.method[2],
@@ -171,7 +172,7 @@ Index_to_extract = list()
     if(Sort.thres >=1 && Sort.thres%%1==0 && Sort.thres <= length(clust$order)){
     cat(nrow(dataset),"trends will be sorted into",Sort.thres,"clusters...\n")
     } else {
-    Warning("'sort.thres' must be a positive integer no larger than number of features. Set to 50 by default and continute...")
+    warning("'sort.thres' must be a positive integer no larger than number of features. Set to 50 by default and continute...")
     Sort.thres=50
     }
   clust_Index <- stats::cutree(clust, k=Sort.thres)
