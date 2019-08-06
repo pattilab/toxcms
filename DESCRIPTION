@@ -1,13 +1,14 @@
 Package: toxcms
 Type: Package
 Title: A tool to perform Metabolomic dose-response analysis and discover drug targets
-Version: 1.0.2
+Version: 1.0.3
 Authors@R: c(
     person("Cong-Hui", "Yao", email = "conghui.yao@wustl.edu", role = c("aut")),
-    person("Lingjue", "Wang", email = "wang.lingjue@wustl.edu", role = c("cre","aut"))
+    person("Lingjue (Mike)", "Wang", email = "wang.lingjue@wustl.edu", role = c("cre","aut")),
+    person("Ethan", "Stancliff", email = "estancliff@wustl.edu", role = c("ctb"))
     )
-Description: An informatic tool for metabolomics data analysis. TOXcms profiles metabolic trends as a function of a drug doses 
-    from untargeted metabolomics data, models and visualizes dose-dependent metabolic changes. 
+Description: An informatic tool for metabolomics data analysis. TOXcms profiles metabolic trends as a function
+    of drug doses from untargeted metabolomics data, models and visualizes dose-dependent metabolic changes. 
     TOXcms is useful in screening metabolic targets of drugs.
 Depends: 
     R (>= 3.5.0)
@@ -22,7 +23,9 @@ Imports:
     gplots,
     ggplot2,
     grDevices,
-    gridExtra
+    gridExtra,
+    ggfortify,
+    hashmap
 Suggests:
     xcms,
     rmarkdown,

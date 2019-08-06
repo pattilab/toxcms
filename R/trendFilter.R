@@ -26,7 +26,7 @@ pvalue <- DoseStat$pvalue[,c(-1L,-2L)]
 relChange <- DoseStat$relChange[,-1L]
 pval_indicator <- pvalue %>% apply(2,function(x){ifelse(x<=pval_cutoff,1,0)})
 pval_sum <- rowSums(pval_indicator)
-relchange_indicator <- relChange %>% apply(2,function(x){ifelse(x==0,0,ifelse(x<0,-1.1))}) #problematic when relchange = 0 # tried to fix
+relchange_indicator <- relChange %>% apply(2,function(x){ifelse(x==0,0,ifelse(x<0,-1,1))}) #problematic when relchange = 0 # tried to fix
 trend_indicator  = rowSums(pval_indicator * relchange_indicator) # place ABSOLUTE in # Condition 2
 trendCalc_result <- data.table(index = DoseStat$Feature$index, pval_indicator = pval_sum, trend_indicator = trend_indicator)
 # index of significant trends
