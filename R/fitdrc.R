@@ -57,7 +57,7 @@ fitdrc = function(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt
   if(sapply(mz,is.numeric)) {
     mz <- round(mz,4)
   } else {
-    mz %>% mutate_if(is.factor, as.character) %>% mz
+    mz %>% mutate_if(is.factor, as.character) -> mz
   }
   if(sapply(rt,is.numeric)) {
     rt <- round(rt,4)

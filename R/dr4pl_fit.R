@@ -32,7 +32,7 @@ dr4pl_Fit <- function(DoseResponse_report, ED=0.5, Dose_values, export = TRUE){
     tryCatch({
       dr4pl_objects[[i]] <- dr4pl(vals~doses)
       theta <- dr4pl_objects[[i]]$parameters
-      ED_values[i] <- ObservedED(ED,theta)
+      ED_values[i] <- ObservedED(max(vals)*ED,theta)
     },error = function(e){
       cat("error occurs when fitting feature #",i,"\n")
     })
