@@ -18,7 +18,6 @@
 #' Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
 #' @import magrittr data.table dplyr
 #' @importFrom stats aov pairwise.t.test sd
-#' @importFrom userfriendlyscience posthocTGH
 #' @export
 
 calcdosestat = function(Feature, Dose_Levels, multicomp = c("none","ttest","tukey","games-howell"),
@@ -50,7 +49,7 @@ mean <- matrix(nrow = num_feature, ncol = 0)
 std <- matrix(nrow = num_feature, ncol = 0)
 cv <- matrix(nrow = num_feature, ncol = 0)
 # extract raw data by matching column names
-for(DoseX in Dose_Levels) {
+for(DoseX in Dose_Levels)  {
 ResponseX <- Feature %>% dplyr::select(contains(DoseX)) # get the raw response value from X
   if(length(ResponseX)==0){
   cat("Warning message: the following dose level does not exist:", DoseX, "\n","Omit ", DoseX, "Continue...\n")
@@ -106,7 +105,7 @@ pairwise_pvalue <- apply(Normalized_Response[,-1L], MARGIN = 1, function(x) {
                   p <- p[lower.tri(p,diag=TRUE)]; return(p)})
 } else{
 pairwise_pvalue <- apply(Normalized_Response[,-1L], MARGIN = 1, function(x) {
-                  p <- userfriendlyscience::posthocTGH(x,dose_levels, method=multicomp, conf.level=0.95)$output[[ifelse(multicomp=="tukey",1,2)]]$p; return(p)}) # extract p value: first output(1) is tukey, second(2) is games-howell
+                  p <- ufs.posthocTGH(x,dose_levels, method=multicomp, conf.level=0.95)$output[[ifelse(multicomp=="tukey",1,2)]]$p; return(p)}) # extract p value: first output(1) is tukey, second(2) is games-howell
 }
 pairwise_pvalue <- t(pairwise_pvalue)
 pairwise_pvalue[is.nan(pairwise_pvalue)] <- 1 # maximum pvalue is 1.
@@ -149,46 +148,3 @@ DoseStat = list(Feature = Feature, Normalized_Response = data.frame(Normalized_R
 cat("done.\n")
 return(DoseStat)
 }
-
-#' Row-wise data normalization and transformation
-#'
-#' @description Perform row-wise data normalization or transformation of a given data.matrix. Return a data.matrix with normalized values.
-#' @usage normalization(data,Norm.method=c("range","auto","pareto","vast","level",
-#' "log10","log2","sqrt"),...)
-#' @param data a matrix of numerical values.
-#' @param Norm.method normalization methods to be applied. By default using range scaling. See details for further information.
-#' @param ... Further arguments to be passed to normalization.
-#' @details normalization() applies a series of commonly used metrices for data normalization. Range scaling ("range") focuses on data correlation and restricted the values in between 0 to 1, (x-min)/(max-min);
-#' Auto scaling ("auto") focuses on data correlation and data is centered to 0 with a standard deviation of 1, (x-mean)/std; Pareto scaling ("pareto") focuses on data correlation and discriminates large fold-chanegs, (x-mean)/(sqrt(std));
-#' Vast scaling ("vast") focuses on less varying data and discriminates largely varying data, (x-mean)/(std*cv); Level scaling ("level") focuses on fold changes against the mean value, (x-mean)/mean;
-#' log10 or log2 transformation ("log10","log2") focuses on scaling the exponential relationship to a linear model, and centering data at the mean; squart root ("sqrt") is a pesudo scaling for positive values only.
-#' @importFrom stats sd
-
-normalization <- function(data,Norm.method=c("range","auto","pareto","vast","level","log10","log2","sqrt"),...){
-
-  Norm.method <- match.arg(Norm.method)
-  data <- as.matrix(data)
-  mean <- apply(data,MARGIN = 1,mean)
-  std <- apply(data,MARGIN=1,stats::sd)
-  max <- apply(data,MARGIN=1,max)
-  min <- apply(data,MARGIN=1,min)
-  range <- max-min
-  cv <- std/mean
-  type = which(c("range","auto","pareto","vast","level","log10","log2","sqrt")==as.character(Norm.method))
-  if(length(type)!=0){
-     norm <- switch(type,
-           apply(data,2,function(x) (x-min)/range), # range focus on correlation and restricted within 0 to 1
-           apply(data,2,function(x) (x-mean)/std), # auto focus on correlation and restricted around 0
-           apply(data,2,function(x) (x-mean)/sqrt(std)), # pareto focus on correlation and discriminate large fold-changes
-           apply(data,2,function(x) (x-mean)/(std*cv)), # vast focus on less varying data and discriminate large varying data compared to auto scaling
-           apply(data,2,function(x) (x-mean)/mean), # level scaling focus on fold changes
-           data %>% log10 %>% apply(.,2,function(x) x-rowMeans(.)), # log10 transformation and center to mean, focus on large fold changes
-           data %>% log2 %>% apply(.,2,function(x) x-rowMeans(.)), # log2
-           data %>% sqrt %>% apply(.,2,function(x) x-rowMeans(.)) # sqrt pesudo scaling.
-           )
-     #cat("Notice:",paste("'",Norm.method,"'",sep=""),"method applied for normalization.\n")
-  } else stop(Norm.method, " is not a normalization method See ?calcDoseStat.")
-  return(norm)
-}
-
-

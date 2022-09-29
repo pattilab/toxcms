@@ -12,7 +12,7 @@
 #' @return The function is a plotting function and dose not have a return.
 #' @author Cong-Hui Yao <conghui.yao@wustl.edu>
 #' Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
-#' @import magrittr ggplot2 grDevices gridExtra
+#' @import magrittr ggplot2 grDevices gridExtra data.table
 #' @export
 
 plottrend<- function(DoseResponse_report, Dose_conditions=NULL, y_transform=TRUE, mz_tag = "mzmed", rt_tag = "rtmed"){

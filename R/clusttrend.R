@@ -126,6 +126,22 @@ dataset <- DoseResponse_report$Normalized_Response[,-1L]
 return(FeatureClust)
 }
 
+#' Sorting dose-response trends by absolute distances in hierarchical cllustering. 
+#'
+#' @description This function sorts similar trends of refence trend(s) based on similarity matrices.
+#' @usage sortByDist(DoseResponse_report, Index, Sort.method=c("near","far","both"),
+#' Sort.thres = 20, Dist.method = "euclidean", Hclust.method = "average",...)
+#' @param DoseResponse_report list This is the output of trendfilter(), the end of toxcms step 2.
+#' @param Index numeric feature indexes to be queried.
+#' @param Sort.method  character methods to sort distances, can be one of "far","near" or "both".
+#' @param Sort.thres numeric sorting threshold for each group based on Sort.method.
+#' @param Dist.method  Matrice of similarity calculation. By default "euclidean". See also \link[stats]{dist}.
+#' @param Hclust.method clustering approach. By default is "average". See also \link[stats]{hclust}.
+#' @param ... Further arguments to be passed.
+#' @return list Each element includes a vector of reference indexes corresponding to the reference_index.
+#' @author Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
+#' @import magrittr data.table dplyr stats 
+
 sortByDist <- function(DoseResponse_report, Index, Sort.method=c("near","far","both"),
                        Sort.thres = 20, Dist.method = "euclidean", Hclust.method = "average",...){
 
@@ -159,8 +175,24 @@ names(Index_to_extract) <- as.character(Index)
 return(Index_to_extract)
 }
 
-sortByClust <- function(DoseResponse_report, Index, Sort.method = c("layer","range"),
-                        Sort.thres = 50, Dist.method="euclidean", Hclust.method = "average",...){
+#' Sorting dose-response trends by clusters defined by hierarchical cllustering. 
+#'
+#' @description This function sorts similar trends of refence trend(s) based on similarity matrices.
+#' @usage sortByClust(DoseResponse_report, Index, Sort.method=c("layer","range"),
+#'                   Sort.thres=50, Dist.method = "euclidean", Hclust.method = "average",...)
+#' @param DoseResponse_report list This is the output of trendfilter(), the end of toxcms step 2.
+#' @param Index numeric feature indexes to be queried.
+#' @param Sort.method  character methods to sort similar trends based on clusters, can be one of "layer","range".
+#' @param Sort.thres numeric sorting threshold for each group based on Sort.method.
+#' @param Dist.method  Matrice of similarity calculation. By default "euclidean". See also \link[stats]{dist}.
+#' @param Hclust.method clustering approach. By default is "average". See also \link[stats]{hclust}.
+#' @param ... Further arguments to be passed.
+#' @return list Each element includes a vector of reference indexes corresponding to the reference_index.
+#' @author Lingjue Wang (Mike) <wang.lingjue@wustl.edu>
+#' @import magrittr data.table dplyr stats 
+
+sortByClust <- function(DoseResponse_report, Index, Sort.method=c("layer","range"),
+                        Sort.thres=50, Dist.method="euclidean", Hclust.method="average",...){
 Sort.method = match.arg(Sort.method)
 dataset <- DoseResponse_report$Normalized_Response[,-1L]
 clust <- dataset %>% stats::dist(method=Dist.method) %>% stats::hclust(method=Hclust.method)

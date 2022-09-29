@@ -1,4 +1,15 @@
-dr4pl_Fit <- function(DoseResponse_report, ED=0.5, Dose_values, export = TRUE){
+#'  Fitting dose response four parameter logistic function to dose-dependent data points
+#'
+#' @description This function applies dr4pl function to fitting a dose-response four parameter logistic model to 
+#' each dose-dependent metabolomic features. 
+#' @usage  dr4pl_fit(DoseResponse_report, ED=0.5, Dose_values, export = TRUE)
+#' @param DoseResponse_report list a complex list of dose-dependent features processed by trendfilter function.
+#' @param ED numeric effective dose value from 0 to 1. 0.5 by default.
+#' @param Dose_values dose values to be fitted.
+#' @param export TRUE/FALSE whether to export the fitting results to a CSV file.
+#' @import dr4pl
+
+dr4pl_fit <- function(DoseResponse_report, ED=0.5, Dose_values, export = TRUE){
 
   if(!is.numeric(Dose_values)){
     stop("Dose input should be numeric.")
@@ -50,15 +61,3 @@ dr4pl_Fit <- function(DoseResponse_report, ED=0.5, Dose_values, export = TRUE){
   }
   return(dr4pl_fit_result)
 }
-
-# function that calculate observed ED according to fitted parameters
-  ObservedED <- function (ED, theta) {
-    if(any(is.na(theta))) {
-      stop("One of the parameter values is NA.")
-    }
-    if(theta[2]<=0) {
-      stop("An IC50/ED50 estimate should always be positive.")
-    }
-    f <- as.numeric(theta[2]*((theta[4]-theta[1])/(ED-theta[1])-1)^(1/theta[3]))
-    return(f)
-  }

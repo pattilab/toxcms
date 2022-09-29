@@ -28,7 +28,7 @@ fitdrc = function(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt
   }
   # load dr4pl fitted result and corresponding feature data
   cat("Fitting data into a logistic dose-response model 'dr4pl'...\n")
-  dr4pl_Fit_result <- dr4pl_Fit(DoseResponse_report = DoseResponse_report, Dose_values = Dose_values, ED = ED, export = export)
+  dr4pl_Fit_result <- dr4pl_fit(DoseResponse_report = DoseResponse_report, Dose_values = Dose_values, ED = ED, export = export)
 
   if(plot==TRUE){
     cat("\nPlotting fitted curves...\n")

@@ -4,11 +4,9 @@
 \name{toxcms-package}
 \alias{toxcms}
 \alias{toxcms-package}
-\title{toxcms: A tool to perform Metabolomic dose-response analysis and discover drug targets}
+\title{toxcms: An Informatic Tool to Perform Dose-response Metabolomic Analysis}
 \description{
-An informatic tool for metabolomics data analysis. TOXcms profiles metabolic trends as a function
-    of drug doses from untargeted metabolomics data, models and visualizes dose-dependent metabolic changes. 
-    TOXcms is useful in screening metabolic targets of drugs.
+An informatic tool for metabolomics data analysis. TOXcms profiles metabolic trends as a function of drug doses from untargeted metabolomics data, models and visualizes dose-dependent metabolic changes. TOXcms is useful in screening metabolic targets of drugs.
 }
 \seealso{
 Useful links:
@@ -28,7 +26,7 @@ Authors:
 
 Other contributors:
 \itemize{
-  \item Ethan Stancliff \email{estancliff@wustl.edu} [contributor]
+  \item Ethan Stancliffe \email{estancliffe@wustl.edu} [contributor]
 }
 
 }
