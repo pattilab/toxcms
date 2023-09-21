@@ -3,6 +3,7 @@
 export(calcdosestat)
 export(clusttrend)
 export(fitdrc)
+export(plotpca)
 export(plottrend)
 export(trendfilter)
 export(ufs.posthocTGH)
