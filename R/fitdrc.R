@@ -76,7 +76,7 @@ fitdrc = function(DoseResponse_report, Dose_values, ED=0.5, mz_tag = "mzmed", rt
       next
       }
     plot <- plotDr4pl(dr_object,dose_transform = TRUE, indices.outlier = TRUE)
-    plot <- plot + labs(title=paste0("index:", i, " ", mz_tag,":", mz[i], " ", rt_tag,":", rt[i,], paste0(" ED",round(ED*100),": ",round(dr4pl_Fit_result[[2]][i], 4), sep=""))) + theme(plot.title=element_text(size=10, hjust = 0.5, face="bold", color="black", lineheight=1))
+    plot <- plot + labs(title=paste0("idx:", i, " ", mz_tag,":", mz[i], " ", rt_tag,":", round(rt[i,],2), paste0(" ED",round(ED*100),": ",round(dr4pl_Fit_result[[2]][i], 2), sep=""))) + theme(plot.title=element_text(size=8, hjust = 0.5, face="bold", color="black", lineheight=1))
     temp_grid[[j]] <- plot
     j=j+1
       if(j==7 || i==last){
