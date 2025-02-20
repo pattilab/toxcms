@@ -41,7 +41,7 @@ dr4pl_fit <- function(DoseResponse_report, ED=0.5, Dose_values, export = TRUE){
   for (i in 1: num_feature) {
     vals <- as.numeric(DoseResponse_report$Normalized_Response[i,-1L])
     tryCatch({
-      dr4pl_objects[[i]] <- dr4pl(vals~doses)
+      dr4pl_objects[[i]] <- dr4pl(vals~doses, method.init="logistic")
       theta <- dr4pl_objects[[i]]$parameters
       #ED_values[i] <- exp(theta[2])
       ED_values[i] <- ObservedED(max(vals)*ED,theta)
